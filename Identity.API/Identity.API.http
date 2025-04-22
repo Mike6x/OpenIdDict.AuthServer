@@ -1,0 +1,9 @@
+@Identity.API_HostAddress = http://localhost:5000
+
+POST {{Identity.API_HostAddress}}/api/login
+Accept: application/json
+{
+    "email": "admin@localhost",
+    "password": "Admin123$"
+} 
+###

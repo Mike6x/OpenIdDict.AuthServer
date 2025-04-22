@@ -1,0 +1,6 @@
+﻿services:
+  identity.api:
+    image: identity.api
+    build:
+      context: .
+      dockerfile: Identity.API/Dockerfile

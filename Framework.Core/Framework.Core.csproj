@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
+      <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+      <PackageReference Include="Mapster" Version="7.4.0" />
+        
+      <PackageReference Include="MediatR" Version="12.4.1" />
+        
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="9.1.0" />
+      <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.6.0" />
+        
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        
+      <PackageReference Include="OpenIddict.AspNetCore" Version="6.1.1" />
+      <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.1.1" />
+      <PackageReference Include="OpenIddict.Quartz" Version="6.1.1" />
+      <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="6.1.1" />
+      <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="6.1.1" />
+      <PackageReference Include="Proggmatic.SpaServices.Vite" Version="9.0.1" />
+      <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
+        
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="OpenApi\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
