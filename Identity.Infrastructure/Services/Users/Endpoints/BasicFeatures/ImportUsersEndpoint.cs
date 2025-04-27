@@ -1,11 +1,11 @@
 using Framework.Core.DataIO;
 using Framework.Core.Storage.File.Features;
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints
+namespace Identity.Infrastructure.Services.Users.Endpoints.BasicFeatures
 {
     public static class ImportUsersEndpoint
     {
@@ -27,7 +27,7 @@ namespace Identity.Infrastructure.Services.Users.Endpoints
             .WithName(nameof(ImportUsersEndpoint))
             .WithDescription("Imports a list of entities from excel files")
             .Produces<ImportResponse>()
-            // .RequirePermission("Permissions.Endpoints.Import")
+            // .RequirePermission("Permissions.Handlers.Import")
             .WithDescription("Import a list of users ");
         }
     }

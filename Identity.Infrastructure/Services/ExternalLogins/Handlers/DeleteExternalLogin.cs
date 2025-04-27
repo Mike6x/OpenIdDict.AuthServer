@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Identity.Infrastructure.Services.ExternalLogins.Handlers;
 
 
-public static class DeleteExternalLoginEndpoint
+public static class DeleteExternalLogin
 {
     public static async Task<IResult> Handler(
             HttpContext httpContext,

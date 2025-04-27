@@ -2,11 +2,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 
-namespace Identity.Domain.Models;
+namespace Identity.Domain.Entities;
 
-/// <summary>
-/// IdentityRoleClaim with <see cref="Guid"/> as the Identifier type
-/// </summary>
 public class IdentityUserClaim : IdentityUserClaim<Guid>
 {
     /// <summary>
@@ -14,9 +11,7 @@ public class IdentityUserClaim : IdentityUserClaim<Guid>
     /// </summary>
     public virtual string Properties { get; set; }
 
-    /// <summary>
-    /// constructor
-    /// </summary>
+
     public IdentityUserClaim()
     {
 
@@ -26,7 +21,7 @@ public class IdentityUserClaim : IdentityUserClaim<Guid>
     public override Claim ToClaim()
     {
         var claim = base.ToClaim();
-        foreach (var property in this.Properties?.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"')))
+        foreach (var property in this.Properties?.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"'))!)
         {
             var keyValue = property.Split(':');
             claim.Properties.Add(keyValue[0], keyValue[1]);

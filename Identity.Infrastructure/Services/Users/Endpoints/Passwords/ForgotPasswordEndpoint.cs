@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Framework.Core.Origin;
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Identity.Application.Users.Features.ForgotPassword;
 using Shared.Authorization;
 using Microsoft.AspNetCore.Builder;

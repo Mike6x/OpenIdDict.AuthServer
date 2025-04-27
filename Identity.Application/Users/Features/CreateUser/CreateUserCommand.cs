@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 using MediatR;
 
-namespace Identity.Application.Users.Features.RegisterUser;
+namespace Identity.Application.Users.Features.CreateUser;
 
-public class RegisterUserCommand : IRequest<RegisterUserResponse>
+public class CreateUserCommand : IRequest<CreateUserResponse>
 {
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;

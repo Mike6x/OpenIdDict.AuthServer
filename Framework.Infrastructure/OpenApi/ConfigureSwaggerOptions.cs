@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Framework.Core.OpenApi;
+namespace Framework.Infrastructure.OpenApi;
 
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
@@ -30,10 +30,10 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 
     private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
     {
-        var text = new StringBuilder(".NET 9 Microservices Starter Kit !");
+        var text = new StringBuilder(".NET 9 OpenIdDict Starter Kit !");
         var info = new OpenApiInfo()
         {
-            Title = "MicroServices Eshop Demo",
+            Title = ".NET 9 OpenIdDict Demo",
             Version = description.ApiVersion.ToString(),
             TermsOfService = new Uri("https://github.com/Mike6x"),
             Contact = new OpenApiContact() { Name = "Mike Pham", Email = "mike.p6x@gmail.com" },

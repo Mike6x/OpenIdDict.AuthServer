@@ -1,14 +1,14 @@
 using FluentValidation;
 using FluentValidation.Results;
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Identity.Application.Users.Features.EmailConfirm;
-using Shared.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Shared.Authorization;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints
+namespace Identity.Infrastructure.Services.Users.Endpoints.Verification
 {
     public static class ConirmEmailEndpoint
     {

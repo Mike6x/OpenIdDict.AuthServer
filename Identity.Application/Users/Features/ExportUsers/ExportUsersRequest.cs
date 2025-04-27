@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Paging;
+using Framework.Core.Paging;
 
-namespace FSH.Framework.Core.Identity.Users.Features.ExportUsers;
+namespace Identity.Application.Users.Features.ExportUsers;
 
 public class ExportUsersRequest : BaseFilter
 {

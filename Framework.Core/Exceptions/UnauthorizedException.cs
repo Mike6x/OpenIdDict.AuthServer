@@ -1,16 +1,15 @@
+﻿using System.Collections.ObjectModel;
 using System.Net;
 
 namespace Framework.Core.Exceptions;
-
-public class UnauthorizedException : CustomException
+public class UnauthorizedException : GeneralException
 {
-    public string Error { get; set; }
-    public string Description { get; set; }
-    public UnauthorizedException(string error = default!, string description = default!) : base(error, HttpStatusCode.Unauthorized)
+    public UnauthorizedException()
+        : base("authentication failed", new Collection<string>(), HttpStatusCode.Unauthorized)
     {
-        Error = error;
-        Description = description;
+    }
+    public UnauthorizedException(string message)
+       : base(message, new Collection<string>(), HttpStatusCode.Unauthorized)
+    {
     }
 }
-
-// Add from fsh

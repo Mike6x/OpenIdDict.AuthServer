@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Identity.Application.Users.Features.ResetPassword;
 using Shared.Authorization;
 using Microsoft.AspNetCore.Builder;

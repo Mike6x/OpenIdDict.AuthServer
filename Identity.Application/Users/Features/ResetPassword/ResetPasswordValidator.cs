@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace FSH.Framework.Core.Identity.Users.Features.ResetPassword;
+namespace Identity.Application.Users.Features.ResetPassword;
 
 public class ResetPasswordValidator : AbstractValidator<ResetPasswordCommand>
 {

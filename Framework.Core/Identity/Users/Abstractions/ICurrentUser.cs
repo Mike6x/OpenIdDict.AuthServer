@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Identity.Application.Users.Abstractions;
+namespace Framework.Core.Identity.Users.Abstractions;
 public interface ICurrentUser
 {
     string? Name { get; }

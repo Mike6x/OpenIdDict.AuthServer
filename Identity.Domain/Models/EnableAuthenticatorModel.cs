@@ -1,4 +1,4 @@
-﻿namespace Pixel.Identity.Shared.Models
+﻿namespace Identity.Domain.Models
 {
     /// <summary>
     /// Holds the key and uri required for setting up user authenticator

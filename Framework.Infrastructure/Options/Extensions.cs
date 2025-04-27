@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Framework.Core.Options;
+namespace Framework.Infrastructure.Options;
 
 public static class Extensions
 {

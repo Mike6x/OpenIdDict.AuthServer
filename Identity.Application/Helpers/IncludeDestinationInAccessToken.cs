@@ -1,14 +1,14 @@
 using System.Security.Claims;
 using OpenIddict.Abstractions;
 
-namespace Identity.Core.Helpers;
+namespace Identity.Application.Helpers;
 
 public static class IncludeDestinationInAccessToken
 {
     public static IEnumerable<string> Get(Claim claim)
     {
         // Note: by default, claims are NOT automatically included in the access and identity tokens.
-        // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
+        // To allow Authorization to serialize them, you must attach them a destination, that specifies
         // whether they should be included in access tokens, in identity tokens or in both.
 
         switch (claim.Type)

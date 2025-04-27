@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 
-namespace FSH.Framework.Core.Identity.Users.Features.ChangePassword;
+namespace Identity.Application.Users.Features.ChangePassword;
+
 public class ChangePasswordValidator : AbstractValidator<ChangePasswordCommand>
 {
     public ChangePasswordValidator()

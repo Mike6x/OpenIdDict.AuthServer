@@ -1,10 +1,10 @@
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints
+namespace Identity.Infrastructure.Services.Users.Endpoints.Verification
 {
     public static class GetConirmEmailEndpoint
     {

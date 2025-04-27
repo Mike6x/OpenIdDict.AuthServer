@@ -9,7 +9,7 @@ namespace Identity.Infrastructure.Services.CorsPolicy.Handlers;
 /// </summary>
 /// <param name="origins"></param>
 /// <returns></returns>
-public static class AddOriginsEndpoint
+public static class AddOrigins
 {
     public static Task<List<string>>  Handler(AddOrRemoveOriginsCommand request, IOptions<CorsOptions> corsOptions)
     {

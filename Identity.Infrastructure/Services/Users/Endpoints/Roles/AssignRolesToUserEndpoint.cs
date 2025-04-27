@@ -1,27 +1,26 @@
-﻿using Identity.Application.Users.Abstractions;
+﻿using Identity.Application.Users;
 using Identity.Application.Users.Features.AssignUserRole;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints;
+namespace Identity.Infrastructure.Services.Users.Endpoints.Roles;
 public static class AssignRolesToUserEndpoint
 {
     internal static RouteHandlerBuilder MapAssignRolesToUserEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapPost("/{id:guid}/roles", async (AssignUserRoleCommand command,
-            HttpContext context,
-            string id,
+        return endpoints.MapPost("/{userId}/roles", async (AssignUserRoleCommand command,
+            string userId,
             IUserService userService,
             CancellationToken cancellationToken) =>
         {
 
-            var message = await userService.AssignRolesAsync(id, command, cancellationToken);
+            var message = await userService.AssignRolesToUserAsync(userId, command, cancellationToken);
             return Results.Ok(message);
         })
         .WithName(nameof(AssignRolesToUserEndpoint))
-        .WithSummary("assign roles")
-        .WithDescription("assign roles");
+        .WithSummary("assign roles to a user")
+        .WithDescription("assign roles to a user");
     }
 
 }

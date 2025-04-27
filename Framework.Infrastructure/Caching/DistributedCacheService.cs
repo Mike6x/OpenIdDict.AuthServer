@@ -1,10 +1,10 @@
 using System.Text;
 using System.Text.Json;
-using FSH.Framework.Core.Caching;
+using Framework.Core.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Framework.Infrastructure.Caching;
+namespace Framework.Infrastructure.Caching;
 
 public class DistributedCacheService : ICacheService
 {

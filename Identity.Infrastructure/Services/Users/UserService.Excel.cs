@@ -8,13 +8,13 @@ using Framework.Core.Storage.File.Features;
 using Identity.Application.Users.Dtos;
 using Identity.Application.Users.Features.ExportUsers;
 using Identity.Domain.Entities;
-using Identity.Shared.Authorization;
+using Shared.Authorization;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Services.Users;
 
-internal partial class UserService
+public partial class UserService
 {
     public async Task<byte[]> ExportAsync(ExportUsersRequest request, CancellationToken cancellationToken)
     {

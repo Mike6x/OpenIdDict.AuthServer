@@ -1,6 +1,18 @@
-namespace Identity.Infrastructure.Services.Aurhentication;
+using Microsoft.AspNetCore.Routing;
 
-public class Extensions
+namespace Identity.Infrastructure.Services.Authentication;
+
+public static class Extensions
 {
-    
+    public static IEndpointRouteBuilder MapAuthenticationEndpoints(this IEndpointRouteBuilder app)
+    {
+
+        app.MapLogInEndpoint();
+        app.MapLogOutEndpoint();
+        
+        app.MapGetLogInCallBackEndpoint();
+        app.MapLogInCallBackEndpoint();
+        
+        return app;
+    }
 }

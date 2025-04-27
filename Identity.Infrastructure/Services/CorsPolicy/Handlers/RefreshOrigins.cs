@@ -1,13 +1,10 @@
-using Identity.Infrastructure.Services.Clients;
 using Identity.Infrastructure.Services.Clients.Endpoints;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using OpenIddict.Abstractions;
 
-namespace Identity.Infrastructure.Services.CorsPolicy.Endpoints;
+namespace Identity.Infrastructure.Services.CorsPolicy.Handlers;
 
 public static class RefreshOrigins
 {

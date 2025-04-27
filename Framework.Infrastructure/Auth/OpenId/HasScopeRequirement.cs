@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Framework.Core.Auth.OpenId;
+namespace Framework.Infrastructure.Auth.OpenId;
 public class HasScopeRequirement : IAuthorizationRequirement
 {
     public string Issuer { get; }

@@ -6,7 +6,7 @@ namespace Identity.Application.Claims.DeleteClaim
     /// <summary>
     /// Remove a Claim form User or Role 
     /// </summary>
-    public class DeleteClaimCommand
+    public class RemoveClaimCommand
     {
 
         [Required]
@@ -18,12 +18,12 @@ namespace Identity.Application.Claims.DeleteClaim
         public ClaimViewModel ClaimToRemove { get; set; } = default!;
 
 
-        public DeleteClaimCommand()
+        public RemoveClaimCommand()
         {
 
         }
 
-        public DeleteClaimCommand(string owner, ClaimViewModel claimToRemove)
+        public RemoveClaimCommand(string owner, ClaimViewModel claimToRemove)
         {
             this.Owner = owner;
             this.ClaimToRemove = claimToRemove;

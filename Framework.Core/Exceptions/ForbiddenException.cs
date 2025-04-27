@@ -1,12 +1,14 @@
-using System.Net;
+﻿using System.Net;
 
 namespace Framework.Core.Exceptions;
-
-public class ForbiddenException : CustomException
+public class ForbiddenException : GeneralException
 {
-    public ForbiddenException() : base("You do not have permissions to access this resource.", HttpStatusCode.Forbidden)
+    public ForbiddenException()
+        : base("unauthorized", [], HttpStatusCode.Forbidden)
+    {
+    }
+    public ForbiddenException(string message)
+       : base(message, [], HttpStatusCode.Forbidden)
     {
     }
 }
-
-// Add from fsh

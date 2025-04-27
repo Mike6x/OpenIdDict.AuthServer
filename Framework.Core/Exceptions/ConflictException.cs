@@ -1,5 +1,12 @@
 using System.Net;
 
-namespace Framework.Core.Exceptions;
-
-public class ConflictException(string message) : CustomException(message, HttpStatusCode.Conflict);
+namespace Framework.Core.Exceptions
+{
+    public class ConflictException : CustomException
+{
+    public ConflictException(string message)
+        : base(message, null, HttpStatusCode.Conflict)
+    {
+    }
+}
+}

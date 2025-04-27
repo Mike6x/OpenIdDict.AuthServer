@@ -1,5 +1,4 @@
-﻿using Framework.Infrastructure.Auth.Policy;
-using Identity.Application.Users.Abstractions;
+﻿using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -15,7 +14,7 @@ public static class GetUserByNameEndpoint
         })
         .WithName(nameof(GetUserByNameEndpoint))
         .WithSummary("Get user profile by Name")
-        .RequirePermission("Permissions.Endpoints.View")
+        // .RequirePermission("Permissions.Handlers.View")
         .WithDescription("Get another user's profile details by userName.");
     }
 }

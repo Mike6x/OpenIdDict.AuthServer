@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
-namespace Framework.Core.Hosting;
+namespace Framework.Infrastructure.Hosting;
 
 public static class StaticFilesConfig
 {
@@ -15,7 +15,7 @@ public static class StaticFilesConfig
             DefaultFileNames = new List<string> { "index.html" },
         });
 
-        //app.MapStaticAssets(); //todo
+        //app.MapStaticAssets()
         app.UseStaticFiles(new StaticFileOptions
         {
             OnPrepareResponse = ctx =>
@@ -72,7 +72,7 @@ public static class StaticFilesConfig
         else
         {
             app.MapFallbackToFile("index.html");
-            //app.UseFileServer(fs => fs);
+            //app.UseFileServer(fs => fs)
 
         }
 

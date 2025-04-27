@@ -1,19 +1,28 @@
-using Identity.Application.Users.Abstractions;
+using Framework.Core.Exceptions;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints.ManagementExtensions;
+namespace Identity.Infrastructure.Services.Users.Endpoints.Account;
 
 public static class HasPasswordEndpoint
 {
     internal static RouteHandlerBuilder MapHasPasswordEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapPost("/{userId}/haspassword", (string userId, IUserService service,CancellationToken cancellationToken) 
-                => service.HasPasswordAsync(userId,cancellationToken))
+        return endpoints.MapPost("/haspassword", 
+                (HttpContext httpContext, IUserService service,CancellationToken cancellationToken) =>
+            {
+                if (httpContext.User.Identity?.IsAuthenticated != true)
+                {
+                    throw new UnauthorizedException();
+                }
+                
+                return service.HasPasswordAsync(httpContext, cancellationToken);
+            })
                     .WithName(nameof(HasPasswordEndpoint))
-                    .WithSummary("Check if user has password")
-                    // .RequirePermission("Permissions.Endpoints.Delete")
-                    .WithDescription("Check if user has password");
+                    .WithSummary("Check if  current claim has password")
+                    // .RequirePermission("Permissions.Handlers.Remove")
+                    .WithDescription("Check if current user has password");
     }
 }

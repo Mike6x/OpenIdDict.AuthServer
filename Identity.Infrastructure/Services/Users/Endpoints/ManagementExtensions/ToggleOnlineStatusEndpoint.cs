@@ -1,19 +1,18 @@
 using System.Security.Claims;
 using Framework.Core.Exceptions;
 using Identity.Application.Users;
-using Shared.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Shared.Authorization;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints.CurrentUser;
+namespace Identity.Infrastructure.Services.Users.Endpoints.ManagementExtensions;
 public static class ToggleOnlineStatusEndpoint
 {
     internal static RouteHandlerBuilder MapToggleOnlineStatusEndpoint(this IEndpointRouteBuilder endpoints)
     {
         return endpoints.MapPost("/toggle-online", (
-            ISender mediator, 
             ClaimsPrincipal user, 
             IUserService service, CancellationToken cancellationToken) =>
         {

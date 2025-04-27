@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace Identity.Application.Claims.Features.Update;
 
-public class UpdateClaimsValidator : AbstractValidator<AssignClaimsCommand>
+public class AssignClaimsValidator : AbstractValidator<AssignClaimsCommand>
 {
-    public UpdateClaimsValidator()
+    public AssignClaimsValidator()
     {
         RuleFor(r => r.Owner)
             .NotEmpty();

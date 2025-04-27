@@ -1,17 +1,17 @@
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints
+namespace Identity.Infrastructure.Services.Users.Endpoints.Verification
 {
     public static class SendVerificationEmailEndPoint
     {
         internal static RouteHandlerBuilder MapSendVerificationEmailEndPoint(this IEndpointRouteBuilder endpoints)
         {
-            return endpoints.MapPost("/{id:guid}/verification-email", async (
-                string id,
+            return endpoints.MapPost("/{userId}/verification-email", async (
+                string userId,
                 HttpContext context,
                 [FromServices] IUserService userService,
                 CancellationToken cancellationToken) =>
@@ -21,12 +21,12 @@ namespace Identity.Infrastructure.Services.Users.Endpoints
 
                     var originUrl = context.Request.Headers.Origin;
 
-                    await userService.SendVerificationEmailAsync(id, originUrl!, cancellationToken);
+                    await userService.SendVerificationEmailAsync(userId, originUrl!, cancellationToken);
                     return Results.Ok();
                 })
                 .WithName(nameof(SendVerificationEmailEndPoint))
                 .WithSummary("Send email to verify user")
-                // .RequirePermission("Permissions.Endpoints.Update")
+                // .RequirePermission("Permissions.Handlers.Update")
                 .WithDescription("Send email to verify user");
         }
     }

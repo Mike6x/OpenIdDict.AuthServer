@@ -1,6 +1,6 @@
 namespace Shared.Authorization;
 
-public class AppResources
+public static class AppResources
 {
     public const string Tenants = nameof(Tenants);
     public const string Dashboard = nameof(Dashboard);

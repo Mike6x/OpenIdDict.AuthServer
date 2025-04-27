@@ -1,14 +1,12 @@
-﻿namespace Framework.Core.Exceptions;
-public class InternalServerException : Exception
+using System.Net;
+
+namespace Framework.Core.Exceptions
 {
-    public InternalServerException(string message) : base(message)
+    public class InternalServerException : CustomException
+{
+    public InternalServerException(string message, List<string>? errors = default)
+        : base(message, errors, HttpStatusCode.InternalServerError)
     {
     }
-
-    public InternalServerException(string message, string details) : base(message)
-    {
-        Details = details;
-    }
-
-    public string? Details { get; }
+}
 }

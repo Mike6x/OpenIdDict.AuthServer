@@ -15,7 +15,7 @@ internal static class Extensions
     internal static IServiceCollection ConfigureJobs(this IServiceCollection services, IConfiguration configuration)
     {
         var dbOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>() ??
-            throw new FshException("database options cannot be null");
+            throw new GeneralException("database options cannot be null");
 
         services.AddHangfireServer(o =>
         {
@@ -29,19 +29,19 @@ internal static class Extensions
         {
             switch (dbOptions.Provider.ToUpperInvariant())
             {
-                case DbProviders.PostgreSQL:
+                case DbProviders.PostgreSql:
                     config.UsePostgreSqlStorage(o =>
                     {
                         o.UseNpgsqlConnection(dbOptions.ConnectionString);
                     });
                     break;
 
-                case DbProviders.MSSQL:
+                case DbProviders.Mssql:
                     config.UseSqlServerStorage(dbOptions.ConnectionString);
                     break;
 
                 default:
-                    throw new FshException($"hangfire storage provider {dbOptions.Provider} is not supported");
+                    throw new GeneralException($"hangfire storage provider {dbOptions.Provider} is not supported");
             }
 
             config.UseFilter(new FshJobFilter(provider));
@@ -56,7 +56,7 @@ internal static class Extensions
     {
         var hangfireOptions = config.GetSection(nameof(HangfireOptions)).Get<HangfireOptions>() ?? new HangfireOptions();
         var dashboardOptions = new DashboardOptions();
-        dashboardOptions.AppPath = "https://fullstackhero.net/";
+        dashboardOptions.AppPath = "https://Mike.p6x.net/";
         dashboardOptions.Authorization = new[]
         {
            new HangfireCustomBasicAuthenticationFilter

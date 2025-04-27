@@ -3,7 +3,7 @@ using Framework.Core.Exceptions;
 using Framework.Core.Mail;
 using Framework.Infrastructure.Constants;
 using Identity.Domain.Entities;
-using Identity.Shared.Authorization;
+using Shared.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +13,10 @@ public partial class UserService
 {
     public async Task SendVerificationEmailAsync(string userId, string origin, CancellationToken cancellationToken)
     {
-        var user = await userManager.Users.Where(u => u.Id.ToString() == userId).FirstOrDefaultAsync(cancellationToken);
+        var user = await userManager.Users.Where(u => u.Id.ToString() == userId).FirstOrDefaultAsync(cancellationToken)
+                   ?? throw new NotFoundException($"User with Id: {userId} doesn't exist.");
 
-        _ = user ?? throw new NotFoundException("User Not Found.");
-
-        bool isAdmin = await userManager.IsInRoleAsync(user, AppRoles.Admin);
+        var isAdmin = await userManager.IsInRoleAsync(user, AppRoles.Admin);
         if (isAdmin)
         {
             throw new ConflictException("Administrators do not have been verified");
@@ -30,20 +29,19 @@ public partial class UserService
         if (result.Succeeded)
         {
             var messages = new List<string> { $"User {user.UserName} : " };
-            await GenerateVerificationEmail(user, messages, origin);
+            await GenerateVerificationEmail(user, messages, origin,cancellationToken);
         }
     }
 
-    // Generate verification email
-    private async Task GenerateVerificationEmail(AppUser user, List<string> messages, string origin)
+    private async Task GenerateVerificationEmail(AppUser user, List<string> messages, string origin, CancellationToken cancellationToken)
     {
-        string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+        var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
         var mailRequest = new MailRequest(
                 [user.Email ?? string.Empty],
                 "Confirm Registration",
                 emailVerificationUri);
 
-        jobService.Enqueue("email", () => mailService.SendAsync(mailRequest, CancellationToken.None));
+        jobService.Enqueue("email", () => mailService.SendAsync(mailRequest, cancellationToken));
 
         messages.Add($"Please check {user.Email} to verify your account!");
     }
@@ -62,7 +60,7 @@ public partial class UserService
         
         // verificationUri = QueryHelpers.AddQueryString(verificationUri,
         //     TenantConstants.Identifier,
-        //     multiTenantContextAccessor?.MultiTenantContext?.TenantInfo?.Id!);
+        //     multiTenantContextAccessor?.MultiTenantContext?.TenantInfo?.Id!)
         
         return verificationUri;
     }
@@ -72,11 +70,10 @@ public partial class UserService
     {
         EnsureValidTenant();
 
-        var user = await userManager.Users
-            .Where(u => u.Id.ToString() == userId )
-            .FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException($"User with Id: {userId} not found!");
+        var user = await userManager.Users.Where(u => u.Id.ToString() == userId ).FirstOrDefaultAsync(cancellationToken) 
+                   ?? throw new NotFoundException($"User with Id: {userId} not found!");
 
-        if (user!.EmailConfirmed) return  $"Account: {userId}  already confirmed with E-Mail {user.Email} ";
+        if (user.EmailConfirmed) return  $"Account: {userId}  already confirmed with E-Mail {user.Email} ";
 
         code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
         var result = await userManager.ConfirmEmailAsync(user, code);
@@ -84,12 +81,9 @@ public partial class UserService
         return result.Succeeded
             ? $"Account Confirmed for E-Mail {user.Email}. You can now use the /api/tokens endpoint to generate JWT."
             : $"An error occurred while confirming {user.Email}";
-        // : throw new InternalServerException($"An error occurred while confirming {user.Email}")
-
     }
-
     
-    public async Task<string> ConfirmPhoneNumberAsync(string userId, string code)
+    public async Task<string> ConfirmPhoneNumberAsync(string userId, string code, CancellationToken cancellationToken)
     {
         EnsureValidTenant();
 
@@ -98,12 +92,12 @@ public partial class UserService
         if (string.IsNullOrEmpty(user.PhoneNumber)) throw new InternalServerException($"User with Id: {userId} have no phone number.");
 
         var result = await userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, code);
-
-        return result.Succeeded
-            ? user.PhoneNumberConfirmed
+        
+        if(!result.Succeeded) throw new InternalServerException($"An error occurred while confirming {user.PhoneNumber}");
+        
+        return user.PhoneNumberConfirmed
                 ? $"Account Confirmed for Phone Number {user.PhoneNumber}. You can now use the /api/tokens endpoint to generate JWT."
-                : $"Account Confirmed for Phone Number {user.PhoneNumber}. You should confirm your E-mail before using the /api/tokens endpoint to generate JWT."
-            : throw new InternalServerException($"An error occurred while confirming {user.PhoneNumber}");
+                : $"Account Confirmed for Phone Number {user.PhoneNumber}. You should confirm your E-mail before using the /api/tokens endpoint to generate JWT.";
 
     }
 

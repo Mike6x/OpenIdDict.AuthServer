@@ -16,9 +16,9 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 namespace Identity.Infrastructure.Data.Worker;
 
 /// <summary>
-/// Worker is reponsible for setting up the initial values in database
+/// OpenIdDictWorker is reponsible for setting up the initial values in database
 /// </summary>
-public class Worker(
+public class OpenIdDictWorker(
     IServiceProvider serviceProvider, 
     IConfiguration configuration,
     IOptions<CorsOptions> corsOptions
@@ -34,7 +34,7 @@ public class Worker(
         await SeedClientsAsync(scope, cancellationToken); // Net 8 Identity
         
         await SeedRolesAsync(scope, cancellationToken, context);
-        await SeedUsersAsync(scope, cancellationToken);
+        await SeedUsersAsync(scope);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
@@ -305,7 +305,7 @@ public class Worker(
             await applicationManager.CreateAsync(
                 new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "mvc_client",
+                    ClientId = "mvc-client",
                     ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0",
                     DisplayName = "MVC Client Application",
                     ConsentType = ConsentTypes.Explicit,
@@ -376,6 +376,33 @@ public class Worker(
 
             }, cancellationToken);
         }
+        
+        if (await applicationManager.FindByClientIdAsync("blazorwasm-oidc-application", cancellationToken) is null)
+        {
+            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
+            {
+                ClientId = "blazorwasm-oidc-application",
+                ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C206",
+                ConsentType = ConsentTypes.Explicit,
+                DisplayName = "BlazorWasm Application",
+                RedirectUris =
+                {
+                    new Uri("https://localhost:7002/authentication/login-callback")
+                },
+                PostLogoutRedirectUris =
+                {
+                    new Uri("https://localhost:7002/authentication/logout-callback")
+                },
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.GrantTypes.Password,
+                    OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    $"{OpenIddictConstants.Permissions.Prefixes.Scope}api1"
+                },
+            }, cancellationToken);
+        }
+
 
         var applications = configuration.GetSection("OpenIdDict:ApplicationConfigs")
             .Get<IEnumerable<ApplicationConfig>>();
@@ -566,7 +593,7 @@ public class Worker(
         }
     }
     
-    private async Task SeedUsersAsync(IServiceScope scope, CancellationToken cancellationToken)
+    private async Task SeedUsersAsync(IServiceScope scope)
     {
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
         if (userManager.Users.Any()) return;

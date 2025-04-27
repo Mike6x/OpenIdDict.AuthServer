@@ -1,3 +1,3 @@
-namespace Identity.Application.Users.Features.RegisterUser;
+namespace Identity.Application.Users.Features.CreateUser;
 
-public record RegistUserResponse(Guid UserId);
+public record CreateUserResponse(Guid UserId);

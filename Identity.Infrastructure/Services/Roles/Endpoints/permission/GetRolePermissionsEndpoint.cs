@@ -4,20 +4,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Identity.Infrastructure.Services.Roles.Endpoints.permission;
-public static class GetRoleWithPermissionsEndpoint
+public static class GetRolePermissionsEndpoint
 {
-    public static RouteHandlerBuilder MapGetRoleWithPermissionsEndpoint(this IEndpointRouteBuilder endpoints)
+    public static RouteHandlerBuilder MapGetRolePermissionsEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapGet("/{roleId:guid}/permissions", async (
+        return endpoints.MapGet("/{roleId}/permissions", async (
                 string roleId, 
                 IRoleService roleService, 
-                CancellationToken cancellationToken) =>
-                {
-                    return await roleService.GetRoleWithPermissionsAsync(roleId, cancellationToken);
-                })
-                .WithName(nameof(GetRoleWithPermissionsEndpoint))
-                .WithSummary("get role with permissions")
-                // .RequirePermission("Permissions.Endpoints.View")
-                .WithDescription("get role permissions");
+                CancellationToken cancellationToken) 
+                => await roleService.GetRolePermissionsAsync(roleId, cancellationToken))
+                                    .WithName(nameof(GetRolePermissionsEndpoint))
+                                    .WithSummary("get role permissions")
+                                    // .RequirePermission("Permissions.Handlers.View")
+                                    .WithDescription("get all permissions of a role");
     }
 }

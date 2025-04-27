@@ -7,13 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
+      <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
       <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Mapster" Version="7.4.0" />
       <PackageReference Include="Microsoft.FeatureManagement" Version="4.0.0" />
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="10.8.0.113526">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Authentication\Features\" />
+      <Folder Include="Authorization\Features\" />
     </ItemGroup>
 
 </Project>

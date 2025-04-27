@@ -1,11 +1,11 @@
-﻿using Framework.Core.Options;
-using Framework.Core.Exceptions;
+﻿using Framework.Core.Exceptions;
+using Framework.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Framework.Core.Auth.OpenId;
+namespace Framework.Infrastructure.Auth.OpenId;
 
 public static class OpenIdConfig
 {

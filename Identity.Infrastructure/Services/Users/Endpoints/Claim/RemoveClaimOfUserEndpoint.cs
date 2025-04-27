@@ -1,5 +1,5 @@
 using Identity.Application.Claims.DeleteClaim;
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Identity.Infrastructure.Services.Users.Endpoints.Claim;
 
-public static class RemoveUserClaimEndpoint
+public static class RemoveClaimOfUserEndpoint
 {
-    internal static RouteHandlerBuilder MapRemoveUserClaimEndpoint(this IEndpointRouteBuilder endpoints)
+    internal static RouteHandlerBuilder MapRemoveClaimOfUserEndpoint(this IEndpointRouteBuilder endpoints)
     {
             return endpoints.MapDelete("/{userId}/claim", async (
                 string userId,
@@ -22,7 +22,7 @@ public static class RemoveUserClaimEndpoint
 
                 return Results.Ok(message);
             })
-            .WithName(nameof(RemoveUserClaimEndpoint))
+            .WithName(nameof(RemoveClaimOfUserEndpoint))
             .WithSummary("Remove a claim from User ")
             .WithDescription("Remove a claim from User ");
     }

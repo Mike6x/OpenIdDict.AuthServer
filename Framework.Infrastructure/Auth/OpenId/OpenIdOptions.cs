@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Framework.Core.Options;
+using Framework.Infrastructure.Options;
 
-namespace Framework.Core.Auth.OpenId;
+namespace Framework.Infrastructure.Auth.OpenId;
 public class OpenIdOptions : IOptionsRoot
 {
     [Required(AllowEmptyStrings = false)]

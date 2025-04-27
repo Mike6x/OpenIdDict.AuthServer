@@ -5,18 +5,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
+using OpenIddict.Client.AspNetCore;
 using OpenIddict.Server.AspNetCore;
 
 namespace Identity.Infrastructure.Services.Authorization;
 
-public sealed partial class Service(
-    HttpContext httpContext,
+public sealed partial class OpenIdDictService(
+    // HttpContext httpContext,
     IOpenIddictApplicationManager applicationManager,
     IOpenIddictAuthorizationManager authorizationManager,
     IOpenIddictScopeManager scopeManager,
     SignInManager<AppUser> signInManager,
     UserManager<AppUser> userManager,
-    RoleManager<AppRole> roleManager) :  IAuthorizationService
+    RoleManager<AppRole> roleManager) : IAuthorizationService
 {
     private async Task AddUserClaimsAsync(ClaimsIdentity claimsIdentity, AppUser user)
     {
@@ -90,7 +91,6 @@ public sealed partial class Service(
         }
     }
     
-    
     public async Task<IResult> EndSessionAsync()
     {
         // Ask ASP.NET Core Identity to delete the local and external cookies created
@@ -101,10 +101,8 @@ public sealed partial class Service(
         // Returning a SignOutResult will ask Authorization to redirect the user agent
         // to the post_logout_redirect_uri specified by the client application or to
         // the RedirectUri specified in the authentication properties if none was set.
-        return Results.SignOut(authenticationSchemes: new List<string>
-            {
-                OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
-            },
+        return Results.SignOut(
+            authenticationSchemes: [OpenIddictServerAspNetCoreDefaults.AuthenticationScheme],
             properties: new AuthenticationProperties { RedirectUri = "/" });
     }
     

@@ -1,6 +1,8 @@
 namespace Framework.Infrastructure.Persistence;
 
-public class DbProviders
+internal static class DbProviders
 {
-    
+    public const string PostgreSql = "POSTGRESQL";
+    public const string Mssql = "MSSQL"; 
+    public const string Sqlite = "SQLITE";
 }

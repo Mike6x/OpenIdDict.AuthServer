@@ -1,28 +1,25 @@
-﻿using Identity.Application.Users.Abstractions;
+﻿using Identity.Application.Users;
 using Identity.Application.Users.Features.ToggleUserStatus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints;
+namespace Identity.Infrastructure.Services.Users.Endpoints.ManagementExtensions;
 
 public static class ToggleUserStatusEndpoint
 {
-    internal static RouteHandlerBuilder ToggleUserStatusEndpointEndpoint(this IEndpointRouteBuilder endpoints)
+    internal static RouteHandlerBuilder MapToggleUserStatusEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapPost("/{id:guid}/toggle-status", async (
-            string id,
+        return endpoints.MapPost("/{userId}/toggle-active", async (
+            string userId,
             ToggleUserStatusCommand command,
             [FromServices] IUserService userService,
             CancellationToken cancellationToken) =>
         {
-            if (id != command.UserId)
-            {
-                return Results.BadRequest();
-            }
-
-            await userService.ToggleStatusAsync(command, cancellationToken);
+            if (userId != command.UserId) return Results.BadRequest();
+            
+            await userService.SetActiveStatusAsync(command, cancellationToken);
             return Results.Ok();
         })
         .WithName(nameof(ToggleUserStatusEndpoint))

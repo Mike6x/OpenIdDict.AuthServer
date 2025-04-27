@@ -4,7 +4,7 @@ using Identity.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace Identity.Infrastructure.Services.Authenticator.Endpoints;
+namespace Identity.Infrastructure.Services.Authenticator.Handlers;
 
 public static class GetAuthenticatorAndUri
 {

@@ -1,12 +1,11 @@
 using FluentValidation;
-using Identity.Application.Users.Abstractions;
 
-namespace Identity.Application.Users.Features.RegisterUser;
+namespace Identity.Application.Users.Features.CreateUser;
 
 
-public class RegisterUserValidator : AbstractValidator<CreateUserCommand>
+public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 {
-    public RegisterUserValidator(IUserService userService)
+    public CreateUserValidator(IUserService userService)
     {
 
         RuleFor(u => u.FirstName)
@@ -24,6 +23,6 @@ public class RegisterUserValidator : AbstractValidator<CreateUserCommand>
             .NotEmpty()
             // .MustAsync(async (user, phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!))
             .WithMessage((_, phone) => $"Phone number {phone} is already registered.");
-        //.Unless(u => string.IsNullOrWhiteSpace(u.PhoneNumber));
+        //.Unless(u => string.IsNullOrWhiteSpace(u.PhoneNumber))
     }
 }

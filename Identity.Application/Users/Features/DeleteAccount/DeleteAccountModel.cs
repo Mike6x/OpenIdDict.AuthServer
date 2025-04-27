@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pixel.Identity.Shared.Models
+namespace Identity.Application.Users.Features.DeleteAccount
 {
     public  class DeleteAccountModel
     {

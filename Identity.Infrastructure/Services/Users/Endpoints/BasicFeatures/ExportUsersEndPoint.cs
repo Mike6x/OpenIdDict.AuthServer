@@ -1,10 +1,10 @@
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Identity.Application.Users.Features.ExportUsers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints
+namespace Identity.Infrastructure.Services.Users.Endpoints.BasicFeatures
 {
     public static class ExportUsersEndpoint
     {
@@ -16,7 +16,7 @@ namespace Identity.Infrastructure.Services.Users.Endpoints
             })
             .WithName(nameof(ExportUsersEndpoint))
             .WithSummary("Export a list of users with paging support")
-            // .RequirePermission("Permissions.Endpoints.Export")
+            // .RequirePermission("Permissions.Handlers.Export")
             .WithDescription("Export a list of users with paging support");
         }
     }

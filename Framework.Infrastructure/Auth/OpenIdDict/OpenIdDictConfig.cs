@@ -1,19 +1,24 @@
 ﻿using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
-using Quartz;
-using Framework.Core.Options;
+using System.Security.Cryptography.X509Certificates;
+using Framework.Core.Exceptions;
+using Framework.Core.Persistence;
+using Framework.Infrastructure.Options;
+using Framework.Infrastructure.Persistence;
+using Hangfire.Server;
 using Identity.Domain.Settings;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Validation.AspNetCore;
+using Quartz;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Framework.Core.Auth.OpenIdDict;
+namespace Framework.Infrastructure.Auth.OpenIdDict;
 
 public static class OpenIdDictConfig
 {
@@ -38,19 +43,19 @@ public static class OpenIdDictConfig
         return services;
     }
 
-    public static void ConfigureOpenIdDict<T>(this WebApplicationBuilder builder, Assembly dbContextAssembly, string connectionName = "DefaultConnection") 
+    public static IServiceCollection AddOpenIdDictConfig<T>(this IServiceCollection services, IConfiguration configuration)
         where T : DbContext
     {
-        builder.Services.AddQuartz(options =>
+        services.AddQuartz(options =>
         {
             options.UseSimpleTypeLoader();
             options.UseInMemoryStore();
         });
         
         // Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
-        builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
     
-        builder.Services
+        services
             .AddOpenIddict()
             .AddCore(options =>
             {
@@ -85,18 +90,10 @@ public static class OpenIdDictConfig
                     .AllowHybridFlow()
                     .AllowRefreshTokenFlow()
                     .AllowDeviceAuthorizationFlow();
-
                 
                 //PKCE
                 options.RequireProofKeyForCodeExchange();
                 
-                // var scopes = new List<string>
-                // {
-                //     Permissions.Scopes.Email,
-                //     Permissions.Scopes.Profile,
-                //     Permissions.Scopes.Roles,
-                // }.Select(s => s.Replace(Permissions.Prefixes.Scope, ""));
-                // options.RegisterScopes(scopes.ToArray());
                 options.RegisterScopes(
                     Scopes.OpenId,
                     Scopes.Email,
@@ -106,16 +103,14 @@ public static class OpenIdDictConfig
                     "api"
                 );
                 
-                if (builder.Environment.IsDevelopment())
-                {
-                    options
-                        .AddDevelopmentEncryptionCertificate()
-                        .AddDevelopmentSigningCertificate();
-                }
+                // only dev
+                options.AddDevelopmentEncryptionCertificate()
+                    .AddDevelopmentSigningCertificate();
+                
                 
                 # region Check PKCE key
                 
-                var openIdDictSettings = builder.Configuration.GetSection("OpenIdDict").Get<OpenIdDictSettingsConfig>();
+                var openIdDictSettings = configuration.GetSection("OpenIdDict").Get<OpenIdDictSettingsConfig>();
 
                 if(!string.IsNullOrEmpty(openIdDictSettings?.Encryption?.Key))
                 {
@@ -179,65 +174,13 @@ public static class OpenIdDictConfig
             {
                 options.UseLocalServer();
                 options.UseAspNetCore();
+                // RegisterUser the System.Net.Http. integration
+                options.UseSystemNetHttp();
             });
-            //.AddValidation(options =>
-            //{
-            //    // Note: the validation handler uses OpenID Connect discovery
-            //    // to retrieve the address of the introspection endpoint.
-            //    //options.SetClientId(openIddictSettings.IdentityClientId);
 
-            //    // Import the configuration from the local OpenIddict server instance.
-            //    options.UseLocalServer();
-
-            //    // Register the System.Net.Http. integration
-            //    options.UseSystemNetHttp();
-
-            //    // Register the ASP.NET Framework.Core host.
-            //    options.UseAspNetCore();
-            //});
-
-        // Move to IdentityConfig
-        // builder.Services
-        //     .AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
-        // builder.Services
-        //     .AddAuthorization();
-
-        #region Register Database
-        // string? connectionString = builder.Configuration.GetConnectionString(connectionName);
-        // if (!builder.Environment.IsDevelopment() && connectionString == null)
-        //     throw new ArgumentNullException(nameof(connectionString));
-        //
-        // builder.Services.AddDbContext<T>(options =>
-        // {
-        //     if (builder.Environment.IsDevelopment())
-        //     {
-        //         options.UseInMemoryDatabase("authDb");
-        //     }
-        //     else
-        //     {
-        //         options.UseNpgsql(connectionString, m => m.MigrationsAssembly(dbContextAssembly.FullName));
-        //     }
-        //     
-        //     options.UseNpgsql(connectionString, m => m.MigrationsAssembly(dbContextAssembly.FullName));
-        //     options.UseOpenIddict();
-        // });
-        #endregion
+        return services;
     }
-    
-    public static void ConfigureOpenIdDictDbContext<T>(this WebApplicationBuilder builder, Assembly dbContextAssembly, string connectionName = "DefaultConnection") 
-        where T : DbContext
-    {
-        var connectionString = builder.Configuration.GetConnectionString(connectionName) 
-                               ?? throw new InvalidOperationException($"Connection string {connectionName} not found.");
-
-        builder.Services.AddDbContext<T>(options =>
-        {
-            options.UseNpgsql(connectionString, m => m.MigrationsAssembly(dbContextAssembly.FullName));
-            options.UseOpenIddict();
-        });
-    }
-    
-
+  
     private static void GenerateCertificate(string path, CertConfig? cert, CertificateType type)
     {
         if(File.Exists(path))
@@ -288,13 +231,4 @@ public static class OpenIdDictConfig
         Signing
     }
     
-        
-    private const string AllowAllOrigins = "AllowAll";
-    public static IApplicationBuilder UseOpenIdDict(this WebApplication app)
-    {
-        app.UseCors(AllowAllOrigins);
-        return app;
-    }
-
-
 }

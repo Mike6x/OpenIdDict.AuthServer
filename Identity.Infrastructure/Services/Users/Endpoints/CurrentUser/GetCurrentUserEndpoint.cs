@@ -1,18 +1,17 @@
 ﻿using System.Security.Claims;
 using Framework.Core.Exceptions;
-using Identity.Application.Users.Abstractions;
-using Shared.Authorization;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Shared.Authorization;
 
-
-namespace Identity.Infrastructure.Services.Users.Endpoints;
+namespace Identity.Infrastructure.Services.Users.Endpoints.CurrentUser;
 public static class GetCurrentUserEndpoint
 {
     internal static RouteHandlerBuilder MapGetCurrentUserEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapGet("/profile", async (ClaimsPrincipal user, IUserService service, CancellationToken cancellationToken) =>
+        return endpoints.MapGet("/", async (ClaimsPrincipal user, IUserService service, CancellationToken cancellationToken) =>
         {
             if (user.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
             {

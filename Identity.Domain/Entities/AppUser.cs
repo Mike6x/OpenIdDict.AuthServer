@@ -1,22 +1,36 @@
 using Microsoft.AspNetCore.Identity;
-using Identity.Domain.Enums;
 
-namespace Identity.Domain.Models;
+namespace Identity.Domain.Entities;
 
 // Add profile data for application users by adding properties to the AppUser class
-public class AppUser : IdentityUser
+public class AppUser : IdentityUser<Guid>
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public Uri? ImageUrl { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public bool IsActive { get; set; }
+    public bool? IsOnline { get; set; }
+    
+    public string? RefreshToken { get; set; }
+    
+    public DateTime RefreshTokenExpiryTime { get; set; }
+    
+    public DateTime? LastLoginOn { get; set; }
+    
+    public DateTime CreatedOn { get; set; }
+    
     public Guid? CreatedBy { get; set; }
-    public DateTime? LastLoginDate { get; set; }
-    public UserStatus Status { get; set; } = UserStatus.Active;
+    
+    public Guid? LastModifiedBy { get; set; }
+
+    public DateTime? LastModifiedOn { get; set; }
+    
     public string? ObjectId { get; set; }
     
-    // public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-    // public string? RefreshToken { get; set; }
-    // public DateTime RefreshTokenExpiryTime { get; set; }
-   // public bool PasswordChangeRequired { get; set; } = false;
+
+    // public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>()
+    // public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = default!
+    // public virtual ICollection<AccessToken> AccessTokens { get; set; } = default!
+    // public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = default!
+
 }

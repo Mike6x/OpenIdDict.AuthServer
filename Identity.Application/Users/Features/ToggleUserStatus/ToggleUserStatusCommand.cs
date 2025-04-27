@@ -1,6 +1,6 @@
-﻿namespace FSH.Framework.Core.Identity.Users.Features.ToggleUserStatus;
+﻿namespace Identity.Application.Users.Features.ToggleUserStatus;
 public class ToggleUserStatusCommand
 {
-    public bool ActivateUser { get; set; }
+    public bool IsActive { get; set; }
     public string? UserId { get; set; }
 }

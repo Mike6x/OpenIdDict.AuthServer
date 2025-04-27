@@ -28,7 +28,7 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
             problemDetails.Extensions.Add("errors", validationErrors);
         }
 
-        else if (exception is FshException e)
+        else if (exception is GeneralException e)
         {
             httpContext.Response.StatusCode = (int)e.StatusCode;
             problemDetails.Detail = e.Message;

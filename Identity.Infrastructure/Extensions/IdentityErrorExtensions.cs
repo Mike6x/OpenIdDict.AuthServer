@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Pixel.Identity.Core.Extensions
+namespace Identity.Infrastructure.Extensions
 {
     public static class IdentityErrorExtensions
     {

@@ -7,11 +7,11 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-namespace Framework.Core.OpenApi;
+namespace Framework.Infrastructure.OpenApi;
 
 public static class OpenApiConfig
 {
-    public static IServiceCollection ConfigureOpenApi(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
         
@@ -64,12 +64,12 @@ public static class OpenApiConfig
 
         return services;
     }
-    public static WebApplication UseOpenApi(this WebApplication app)
+    public static WebApplication UseSwagger(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app);
         if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "docker")
         {
-            app.UseSwagger();
+            SwaggerBuilderExtensions.UseSwagger(app);
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
@@ -77,22 +77,11 @@ public static class OpenApiConfig
                 
                 // Build a swagger endpoint for each discovered API version
                 var descriptions = app.DescribeApiVersions();
-                foreach (var description in descriptions)
-                {
-                    var url = $"/swagger/{description.GroupName}/swagger.json";
-                    var name = description.GroupName.ToUpperInvariant();
-                    options.SwaggerEndpoint(url, name);
-                }
-                
+                descriptions.ToList().ForEach(description => 
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant()));
             });
         }
         return app;
     }
     
-    public static WebApplicationBuilder AddOpenApi(this WebApplicationBuilder builder)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        builder.Services.ConfigureOpenApi();
-        return builder;
-    }
 }

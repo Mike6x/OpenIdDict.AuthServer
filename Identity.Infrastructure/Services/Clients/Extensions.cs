@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Clients.Endpoints;
+namespace Identity.Infrastructure.Services.Clients;
 
 public static class Extensions
 {
@@ -10,9 +10,10 @@ public static class Extensions
         app.MapGetApplicationEndpoint();
         app.MapGetApplicationsEndpoint();
         app.MapSearchApplicationsEndpoint();
-        app.MapDeleteApplicationEndpoint();
+        
         app.MapUpdateApplicationEndpoint();
-
+        app.MapDeleteApplicationEndpoint();
+        
         app.MapCallBackApplicationEndpoint();
 
         return app;

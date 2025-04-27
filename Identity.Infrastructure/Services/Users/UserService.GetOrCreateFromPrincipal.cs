@@ -7,8 +7,7 @@ using Microsoft.Identity.Web;
 
 namespace Identity.Infrastructure.Services.Users;
 
-
-internal partial class UserService
+public partial class UserService
 {
     /// <summary>
     /// This is used when authenticating with AzureAd.
@@ -17,7 +16,7 @@ internal partial class UserService
     /// If no user is found with that ObjectId, a new one is created and populated with the values from the ClaimsPrincipal.
     /// If a role claim is present in the principal, and the user is not yet in that roll, then the user is added to that role.
     /// </summary>
-    public async Task<Guid> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal)
+    public async Task<Guid> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal, CancellationToken cancellationToken)
     {
         string? objectId = principal.GetObjectId();
         if (string.IsNullOrWhiteSpace(objectId))

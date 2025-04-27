@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Framework.Core.Hosting;
+namespace Framework.Infrastructure.Hosting;
 
 public static class HostingConfig
 {

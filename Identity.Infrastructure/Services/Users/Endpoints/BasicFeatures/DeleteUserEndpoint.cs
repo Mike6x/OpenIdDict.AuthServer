@@ -1,20 +1,18 @@
-﻿using Identity.Application.Users.Abstractions;
+﻿using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints;
+namespace Identity.Infrastructure.Services.Users.Endpoints.BasicFeatures;
 public static class DeleteUserEndpoint
 {
     internal static RouteHandlerBuilder MapDeleteUserEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapDelete("/{id:guid}", (string id, IUserService service) =>
-        {
-            return service.DeleteAsync(id);
-        })
+        return endpoints.MapDelete("/{userId:guid}", (string userId, IUserService service) 
+                => service.DeleteAsync(userId))
         .WithName(nameof(DeleteUserEndpoint))
-        .WithSummary("delete user")
-        // .RequirePermission("Permissions.Users.Delete")
-        .WithDescription("delete user");
+        .WithSummary("delete a user")
+        // .RequirePermission("Permissions.Users.Remove")
+        .WithDescription("delete a user");
     }
 }

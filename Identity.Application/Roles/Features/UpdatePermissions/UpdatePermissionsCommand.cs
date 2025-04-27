@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Core.Identity.Roles.Features.UpdatePermissions;
+﻿namespace Identity.Application.Roles.Features.UpdatePermissions;
 public class UpdatePermissionsCommand
 {
     public string RoleId { get; set; } = default!;

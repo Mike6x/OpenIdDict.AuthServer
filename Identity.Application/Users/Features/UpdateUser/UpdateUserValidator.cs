@@ -1,7 +1,6 @@
 using FluentValidation;
-using FSH.Framework.Core.Identity.Users.Abstractions;
 
-namespace FSH.Framework.Core.Identity.Users.Features.UpdateUser
+namespace Identity.Application.Users.Features.UpdateUser
 {
     public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
     {
@@ -22,13 +21,13 @@ namespace FSH.Framework.Core.Identity.Users.Features.UpdateUser
                 .NotEmpty()
                 .EmailAddress()
                     .WithMessage("Invalid Email Address.")
-                .MustAsync(async (user, email, _) => !await userService.ExistsWithEmailAsync(email, user.Id))
+              //  .MustAsync(async (user, email, _) => !await userService.ExistsWithEmailAsync(email, user.Id))
                     .WithMessage((_, email) => $"Email {email} is already registered.");
 
-            RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
-                .MustAsync(async (user, phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!, user.Id))
-                    .WithMessage((_, phone) => $"Phone number {phone} is already registered.")
-                    .Unless(u => string.IsNullOrWhiteSpace(u.PhoneNumber));
+            // RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
+            //     .MustAsync(async (user, phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!, user.Id))
+            //         .WithMessage((_, phone) => $"Phone number {phone} is already registered.")
+            //         .Unless(u => string.IsNullOrWhiteSpace(u.PhoneNumber))
         }
     }
 }

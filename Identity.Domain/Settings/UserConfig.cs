@@ -1,4 +1,4 @@
-namespace Identity.Domain.Models;
+namespace Identity.Domain.Settings;
 
 public class UserConfig
 {

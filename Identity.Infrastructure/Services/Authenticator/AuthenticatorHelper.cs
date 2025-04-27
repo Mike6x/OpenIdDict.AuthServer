@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
 
-namespace Identity.Infrastructure.Services.Authenticator.Endpoints;
+namespace Identity.Infrastructure.Services.Authenticator;
 
 public static class AuthenticatorHelper
 {

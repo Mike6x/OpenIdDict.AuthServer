@@ -2,14 +2,16 @@
 using System.Runtime.Serialization;
 using System.Security.Claims;
 
-namespace Identity.Application.Users.Dtos
+namespace Identity.Application.Claims
 {
     /// <summary>
     /// ViewModel for <see cref="Claim"/> model
+    /// => Claim Detail
     /// </summary>
     [DataContract]
     public class ClaimViewModel
     {
+        public bool Enabled { get; set; }
         /// <summary>
         /// Type of Claim
         /// </summary>
@@ -90,5 +92,6 @@ namespace Identity.Application.Users.Dtos
             claim.Properties.Add(nameof(IncludeInIdentityToken), this.IncludeInIdentityToken.ToString());
             return claim;
         }
+        
     }
 }

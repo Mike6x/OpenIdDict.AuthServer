@@ -1,12 +1,12 @@
 ﻿using System.Security.Claims;
 using Framework.Core.Exceptions;
-using Identity.Application.Users.Abstractions;
-using Shared.Authorization;
+using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Shared.Authorization;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints;
+namespace Identity.Infrastructure.Services.Users.Endpoints.CurrentUser;
 public static class GetCurrentUserPermissionsEndpoint
 {
     internal static RouteHandlerBuilder MapGetCurrentUserPermissionsEndpoint(this IEndpointRouteBuilder endpoints)
@@ -20,7 +20,7 @@ public static class GetCurrentUserPermissionsEndpoint
 
             return await service.GetPermissionsAsync(userId, cancellationToken);
         })
-        .WithName("GetUserPermissions")
+        .WithName(nameof(GetCurrentUserPermissionsEndpoint))
         .WithSummary("Get current user permissions")
         .WithDescription("Get current user permissions");
     }

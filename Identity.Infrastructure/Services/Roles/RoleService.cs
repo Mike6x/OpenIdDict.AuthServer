@@ -1,126 +1,171 @@
-﻿using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Core.Identity.Roles;
-using FSH.Framework.Core.Identity.Roles.Features.CreateOrUpdateRole;
-using FSH.Framework.Core.Identity.Roles.Features.UpdatePermissions;
-using FSH.Framework.Core.Identity.Users.Abstractions;
-using FSH.Framework.Infrastructure.Identity.Persistence;
-using FSH.Framework.Infrastructure.Identity.RoleClaims;
-using FSH.Framework.Infrastructure.Tenant;
+﻿using Ardalis.Specification.EntityFrameworkCore;
+using Framework.Core.Exceptions;
+using Framework.Core.Identity.Users.Abstractions;
+using Framework.Core.Paging;
+using Framework.Core.Specifications;
+using Identity.Application.Claims;
+using Identity.Application.Roles;
+using Identity.Application.Roles.Features.CreateOrUpdateRole;
+using Identity.Application.Roles.Features.SearchRoles;
+using Identity.Domain.Entities;
+using Identity.Infrastructure.Data;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Authorization;
 
-namespace FSH.Framework.Infrastructure.Identity.Roles;
+namespace Identity.Infrastructure.Services.Roles;
 
-public class RoleService(RoleManager<FshRole> roleManager,
-    IdentityDbContext context,
-    IMultiTenantContextAccessor<FshTenantInfo> multiTenantContextAccessor,
+public sealed partial class RoleService(RoleManager<AppRole> roleManager,
+    UserManager<AppUser> userManager,
+    IdentityContext context,
     ICurrentUser currentUser) : IRoleService
 {
-    private readonly RoleManager<FshRole> _roleManager = roleManager;
-
-    public async Task<IEnumerable<RoleDto>> GetRolesAsync()
+    public async Task<List<RoleDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await Task.Run(() => _roleManager.Roles
-            .Select(role => new RoleDto { Id = role.Id, Name = role.Name!, Description = role.Description })
-            .ToList());
+        return await roleManager.Roles.AsNoTracking()
+            .Select(role => new RoleDto
+                { 
+                    Id = role.Id, 
+                    Name = role.Name ?? string.Empty, 
+                    Description = role.Description })
+            .ToListAsync(cancellationToken);
+    }
+    public async Task<PagedList<RoleDto>> SearchAsync(SearchRolesRequest request, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<AppRole>(request);
+
+        var roles = await roleManager.Roles
+            .WithSpecification(spec)
+            .ProjectToType<RoleDto>()
+            .ToListAsync(cancellationToken);
+
+        var count = await roleManager.Roles.CountAsync(cancellationToken);
+
+        return new PagedList<RoleDto>(roles, request.PageNumber, request.PageSize, count);
+    }
+    public async Task<RoleDto?> GetAsync(string roleId)
+    {
+        var role = await roleManager.FindByIdAsync(roleId) 
+                   ?? throw new NotFoundException($"Role with Id: {roleId} could not be located");
+        
+        var roleDto = new RoleDto
+        {
+            Id = role.Id, 
+            Name = role.Name?? string.Empty, 
+            Description = role.Description
+        };
+       
+        var claims = await roleManager.GetClaimsAsync(role);
+        foreach (var claim in claims)
+        {
+            roleDto.Claims.Add(ClaimViewModel.FromClaim(claim));
+            if(claim.Type == AppClaims.Permission) roleDto.Permissions?.Add(claim.Value);
+        }
+        
+        return roleDto;
     }
 
-    public async Task<RoleDto?> GetRoleAsync(string id)
+    public async Task<RoleDto?> GetByNameAsync(string name)
     {
-        FshRole? role = await _roleManager.FindByIdAsync(id);
-
-        _ = role ?? throw new NotFoundException("role not found");
-
-        return new RoleDto { Id = role.Id, Name = role.Name!, Description = role.Description };
+        var role = await roleManager.FindByNameAsync(name) 
+                   ?? throw new NotFoundException($"Role with Id: {name} not found");
+        var roleDto = new RoleDto
+        {
+            Id = role.Id, 
+            Name = role.Name?? string.Empty, 
+            Description = role.Description
+        };
+       
+        var claims = await roleManager.GetClaimsAsync(role);
+        foreach (var claim in claims)
+        {
+            roleDto.Claims.Add(ClaimViewModel.FromClaim(claim));
+            if(claim.Type == AppClaims.Permission) roleDto.Permissions?.Add(claim.Value);
+        }
+        
+        return roleDto;
+    
     }
 
-    public async Task<RoleDto> CreateOrUpdateRoleAsync(CreateOrUpdateRoleCommand command)
+    public async Task<RoleDto> CreateOrUpdateAsync(CreateOrUpdateRoleCommand request)
     {
-        FshRole? role = await _roleManager.FindByIdAsync(command.Id);
+        var role = await roleManager.FindByIdAsync(request.Id);
 
         if (role != null)
         {
-            role.Name = command.Name;
-            role.Description = command.Description;
-            await _roleManager.UpdateAsync(role);
+            role.Name = request.Name;
+            role.Description = request.Description;
+            await roleManager.UpdateAsync(role);
         }
         else
         {
-            role = new FshRole(command.Name, command.Description);
-            await _roleManager.CreateAsync(role);
+            role = new AppRole(request.Name, request.Description);
+            await roleManager.CreateAsync(role);
         }
 
-        return new RoleDto { Id = role.Id, Name = role.Name!, Description = role.Description };
+        return new RoleDto { Id = role.Id, Name = role.Name ?? string.Empty, Description = role.Description };
     }
-
-    public async Task DeleteRoleAsync(string id)
+    public async Task<RoleDto> CreateAsync(CreateRoleCommand request)
     {
-        FshRole? role = await _roleManager.FindByIdAsync(id);
+        var role = await roleManager.FindByNameAsync(request.Name);
 
-        _ = role ?? throw new NotFoundException("role not found");
+        if (role != null) throw new ConflictException($"Role with Name: {request.Name} already existed.");
 
-        await _roleManager.DeleteAsync(role);
+        role = new AppRole(request.Name, request.Description);
+        
+        var result = await roleManager.CreateAsync(role);
+        
+        if (!result.Succeeded) throw new InternalServerException("CreateRoleAsync failed. ");
+        
+        role = await roleManager.FindByNameAsync(request.Name) ??  throw new InternalServerException("Internal error. ");
+        foreach (var userClaim in request.Claims)
+        {
+            await roleManager.AddClaimAsync(role, userClaim.ToClaim());
+        }
+        
+        return  new RoleDto
+        {
+            Id = role.Id, 
+            Name = role.Name?? string.Empty, 
+            Description = role.Description,
+            Claims = request.Claims
+        };
     }
-
-    public async Task<RoleDto> GetWithPermissionsAsync(string id, CancellationToken cancellationToken)
+    public async Task<RoleDto> UpdateAsync(UpdateRoleCommand request)
     {
-        var role = await GetRoleAsync(id);
-        _ = role ?? throw new NotFoundException("role not found");
-
-        role.Permissions = await context.RoleClaims
-            .Where(c => c.RoleId == id && c.ClaimType == FshClaims.Permission)
-            .Select(c => c.ClaimValue!)
-            .ToListAsync(cancellationToken);
-
-        return role;
+        var role = await roleManager.FindByIdAsync(request.Id)
+            ?? throw new NotFoundException($"Role with Id: {request.Id} could not be located");
+        
+        var exists = await roleManager.FindByNameAsync(request.Name);
+        
+        if(exists != null) throw new ConflictException($"Role: {request.Name} already existed.");
+        
+        role.Name = request.Name;
+        role.Description = request.Description;
+        var result = await roleManager.UpdateAsync(role);
+       
+        if (!result.Succeeded) throw new InternalServerException("CreateRoleAsync failed. ");
+        
+        return  new RoleDto
+        {
+            Id = role.Id, 
+            Name = role.Name?? string.Empty, 
+            Description = role.Description
+        };
     }
-
-    public async Task<string> UpdatePermissionsAsync(UpdatePermissionsCommand request)
+    
+    public async Task DeleteAsync(string roleId)
     {
-        var role = await _roleManager.FindByIdAsync(request.RoleId);
-        _ = role ?? throw new NotFoundException("role not found");
-        if (role.Name == FshRoles.Admin)
-        {
-            throw new FshException("operation not permitted");
-        }
+        var role = await roleManager.FindByIdAsync(roleId) ?? throw new NotFoundException($"Role with Id: {roleId} not found");
+        
+        var users = await userManager.GetUsersInRoleAsync(role.Name ?? string.Empty);
+        
+        if (users.Any()) throw new ConflictException($"Role: {role.Name} is in use so can not be deleted.");
 
-        if (multiTenantContextAccessor?.MultiTenantContext?.TenantInfo?.Id != TenantConstants.Root.Id)
-        {
-            // Remove Root Permissions if the Role is not created for Root Tenant.
-            request.Permissions.RemoveAll(u => u.StartsWith("Permissions.Root.", StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        var currentClaims = await _roleManager.GetClaimsAsync(role);
-
-        // Remove permissions that were previously selected
-        foreach (var claim in currentClaims.Where(c => !request.Permissions.Exists(p => p == c.Value)))
-        {
-            var result = await _roleManager.RemoveClaimAsync(role, claim);
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(error => error.Description).ToList();
-                throw new FshException("operation failed", errors);
-            }
-        }
-
-        // Add all permissions that were not previously selected
-        foreach (string permission in request.Permissions.Where(c => !currentClaims.Any(p => p.Value == c)))
-        {
-            if (!string.IsNullOrEmpty(permission))
-            {
-                context.RoleClaims.Add(new FshRoleClaim
-                {
-                    RoleId = role.Id,
-                    ClaimType = FshClaims.Permission,
-                    ClaimValue = permission,
-                    CreatedBy = currentUser.GetUserId().ToString()
-                });
-                await context.SaveChangesAsync();
-            }
-        }
-
-        return "permissions updated";
+        var result =  await roleManager.DeleteAsync(role);
+        
+        if (!result.Succeeded) throw new InternalServerException("DeleteRoleAsync failed. ");
     }
+
 }

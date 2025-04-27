@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Framework.Core.Auth.OpenId;
+namespace Framework.Infrastructure.Auth.OpenId;
 public class HasScopeHandler : AuthorizationHandler<HasScopeRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasScopeRequirement requirement)

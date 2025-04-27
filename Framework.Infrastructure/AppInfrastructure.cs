@@ -1,6 +1,6 @@
 namespace Framework.Infrastructure;
 
-public class AppInfrastructure
+public static class AppInfrastructure
 {
-    
+    public static string Name { get; set; } = "AppInfrastructure";
 }

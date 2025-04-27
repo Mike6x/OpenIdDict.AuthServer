@@ -1,57 +1,52 @@
-using BuildingBlocks.Auth.OpenIdDict;
-using BuildingBlocks.Hosting;
+using Framework.Infrastructure;
+using Framework.Infrastructure.Auth.OpenIdDict;
+using Framework.Infrastructure.Cors;
+using Framework.Infrastructure.Hosting;
+using Framework.Infrastructure.Logging.Serilog;
+using Framework.Infrastructure.Persistence;
 using Identity.Api.Extensions;
 using Identity.Application;
+using Identity.Infrastructure.Data;
+using Identity.Infrastructure.Data.Worker;
 using Identity.Infrastructure.Extensions;
-using Identity.Infrastructure.Persistence;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
+StaticLogger.EnsureInitialized();
+Log.Information("server booting up..");
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+ 
+    builder.Services
+        .AddApplicationServices(builder.Configuration)
+        .AddInfrastructureServices(builder.Configuration)
+        .AddApiServices(builder.Configuration);
+    
+    builder.Services
+        .AddDefaultServices(builder.Configuration);
 
-var dbContextAssembly = typeof(AppDbContext).Assembly;
-builder
-    .ConfigureOpenIdDictDbContext<AppDbContext>(dbContextAssembly);
-builder
-    .ConfigureOpenIdDict<AppDbContext>(dbContextAssembly);
+    builder.ConfigureReverseProxySupport();
+    builder.ConfigureSerilog();
 
-builder
-    .ConfigureIdentity()
-    .ConfigureCors()
-    .ConfigureReverseProxySupport();
+    var app = builder.Build();
 
-builder.Services
-    .AddIdentityApplicationServices(builder.Configuration)
-    .AddIdentityApiServices(builder.Configuration);
+    app.UseDefaultServices();
+    app.UseApiServices();
 
-builder.Services
-    .AddHostedService<SeedClientsAndScopes>();
-builder.Services
-    .AddHostedService<SeedRolesAndUsers>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-app.UseIdentityApiServices();
-
-app.Run();
+    await app.RunAsync();
+    
+}
+catch (Exception ex) when (!ex.GetType().Name.Equals("HostAbortedException", StringComparison.Ordinal))
+{
+    StaticLogger.EnsureInitialized();
+    Log.Fatal(ex.Message, "unhandled exception");
+}
+finally
+{
+    StaticLogger.EnsureInitialized();
+    Log.Information("server shutting down..");
+    await Log.CloseAndFlushAsync();
+}
 
 
 
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-// builder.Services.AddOpenApi();
-//
-// var app = builder.Build();
-//
-// // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.MapOpenApi();
-// }
-//
-// app.UseHttpsRedirection();
-//
-//
-//
-// app.Run();

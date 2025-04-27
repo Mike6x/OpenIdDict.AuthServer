@@ -1,6 +1,6 @@
 namespace Framework.Core;
 
-public class AppCore
+public static class AppCore
 {
-    
+    public static string Name { get; set; } = "AppCore";
 }

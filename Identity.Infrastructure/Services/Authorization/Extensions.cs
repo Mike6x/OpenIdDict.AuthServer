@@ -1,29 +1,34 @@
+using Identity.Infrastructure.Services.Authorization.Endpoints;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Authorization.Endpoints;
+namespace Identity.Infrastructure.Services.Authorization;
 
 public static class Extensions
 {
     public static IEndpointRouteBuilder MapOpenIdDictEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGetAuthorizeEndpoint();
-        app.MapPostAuthorizeEndpoint();
-
-        app.MapAcceptAuthorizationGrantEndpoint();
-        app.MapDenyAuthorizationGrantEndpoint();
-
-        app.MapGetVerifyConnectionEndpoint();
-        app.MapPostVerifyConnectionEndpoint();
-        app.MapDenyVerifyConnectionEndpoint();
+        var openIdConnectGroup = app.MapGroup("connect").WithTags("Authorization").WithOpenApi();
         
-        app.MapGetEndSessionEndpoint();
-        app.MapPostEndSessionEndpoint();
+        openIdConnectGroup.MapGetAuthorizeEndpoint();
+        openIdConnectGroup.MapAuthorizeEndpoint();
+
+        openIdConnectGroup.MapAcceptAuthorizationGrantEndpoint();
+        openIdConnectGroup.MapDenyAuthorizationGrantEndpoint();
+
+        openIdConnectGroup.MapGetVerifyConnectionEndpoint();
+        openIdConnectGroup.MapVerifyConnectionEndpoint();
+        openIdConnectGroup.MapDenyVerifyConnectionEndpoint();
         
-        app.MapGetTokenEndpoint();
-        app.MapPostTokenEndpoint();
+        openIdConnectGroup.MapGetEndSessionEndpoint();
+        openIdConnectGroup.MapEndSessionEndpoint();
+        
+        openIdConnectGroup.MapGetTokenEndpoint();
+        openIdConnectGroup.MapTokenEndpoint();
                 
-        app.MapGetUserInfoEndpoint();
-        app.MapPostUserInfoEndpoint();
+        openIdConnectGroup.MapGetUserInfoEndpoint();
+        openIdConnectGroup.MapUserInfoEndpoint();
         
         return app;
     }

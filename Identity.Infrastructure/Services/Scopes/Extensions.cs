@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Scopes.Endpoints;
+namespace Identity.Infrastructure.Services.Scopes;
 
 public static class Extensions
 {

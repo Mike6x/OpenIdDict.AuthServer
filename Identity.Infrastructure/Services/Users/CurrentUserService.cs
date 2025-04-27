@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Framework.Core.Exceptions;
-using Identity.Application.Users.Abstractions;
-using Identity.Shared.Authorization;
+using Framework.Core.Identity.Users.Abstractions;
+using Shared.Authorization;
 
 namespace Identity.Infrastructure.Services.Users;
 public class CurrentUser : ICurrentUser, ICurrentUserInitializer

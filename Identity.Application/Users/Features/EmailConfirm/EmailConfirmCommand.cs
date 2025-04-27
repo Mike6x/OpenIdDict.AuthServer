@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FSH.Framework.Core.Identity.Users.Features.EmailConfirm
+namespace Identity.Application.Users.Features.EmailConfirm
 {
     public class EmailConfirmCommand
     {

@@ -1,4 +1,4 @@
-namespace Identity.Application.OpenIddict.Dtos;
+namespace Identity.Application.Authorization.Dtos;
 
 public class AuthorizationServiceResult
 {

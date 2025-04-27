@@ -2,8 +2,11 @@
 using System.Runtime.Serialization;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Identity.Application.Applications
+namespace Identity.Application.Clients
 {
+    /// <summary>
+    /// ClientDetails or Client Dto
+    /// </summary>
     public class ApplicationViewModel
     {        
         public string Id { get; set; } = string.Empty;

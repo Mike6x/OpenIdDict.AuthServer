@@ -1,41 +1,43 @@
-﻿using Identity.App.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Identity.Infrastructure.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
-namespace Identity.App.EndPoints;
+namespace Identity.Infrastructure.Services;
 
-public static class StatusEndpoints
+public static class GetStatusEndpoints
 {
     public static IEndpointRouteBuilder MapStatusEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app
-            .MapGroup("status")
-            .WithTags("Status")
-            .WithName("Status");
-
-        group.MapGet("", StatusHandler)
-            .WithName("Status")
-            .AllowAnonymous();
-
+        app.MapGetStatusEndpoint();
+        
         return app;
     }
+    
+    private static RouteHandlerBuilder MapGetStatusEndpoint(this IEndpointRouteBuilder endpoints)
+    {
+        return endpoints.MapGet("/status", StatusHandler )
+            .WithName(nameof(GetStatusEndpoints))
+            .WithSummary("Get status of application ")
+            // .RequirePermission("Permissions.Handlers.View")
+            .WithDescription("Return status of Application");
+    }
 
-    private static async Task<Ok<StatusDto>> StatusHandler(HttpContext httpContext, ApplicationDbContext dbContext)
+    private static async Task<StatusDto> StatusHandler(IdentityContext dbContext)
     {
         var status = await dbContext.Database.CanConnectAsync();
 
-
-        return TypedResults.Ok(new StatusDto
+        return new StatusDto
         {
             Api = "Ok",
             Db = status ? "Ok" : "Error",
             TimeStamp = DateTime.UtcNow
-        });
+        };
     }
-
-    public class StatusDto
+    private sealed class StatusDto
     {
-        public string Api { get; set; }
-        public string Db { get; set; }
+        public string Api { get; set; }  = string.Empty;
+        public string Db { get; set; } = string.Empty;
         public DateTime TimeStamp { get; set; }
     }
 }

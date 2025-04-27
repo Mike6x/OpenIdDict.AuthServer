@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace FSH.Framework.Core.Identity.Roles.Features.UpdatePermissions;
+namespace Identity.Application.Roles.Features.UpdatePermissions;
 public class UpdatePermissionsValidator : AbstractValidator<UpdatePermissionsCommand>
 {
     public UpdatePermissionsValidator()

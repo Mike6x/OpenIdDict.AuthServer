@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Roles.Endpoints;
+namespace Identity.Infrastructure.Services.Roles.Endpoints.Basic;
 
 public static class SearchRolesEndpoint
 {

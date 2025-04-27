@@ -1,10 +1,10 @@
-﻿using FSH.Framework.Core.Storage.File.Features;
+﻿using Framework.Core.Storage.File.Features;
 using MediatR;
 
-namespace FSH.Framework.Core.Identity.Users.Features.UpdateUser;
+namespace Identity.Application.Users.Features.UpdateUser;
 public class UpdateUserCommand : IRequest
 {
-    public string Id { get; set; } = default!;
+    public string Id { get; set; } = string.Empty;
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? PhoneNumber { get; set; }
@@ -26,9 +26,9 @@ public class UpdateUserCommand : IRequest
     public DateTimeOffset? LockoutEnd { get; set; }
 
     public string? CreatedBy { get; set; }
-    public DateTime? CreatedOn { get; set; } = default!;
+    public DateTime? CreatedOn { get; set; } = null;
     public string? LastModifiedBy { get; set; }
-    public DateTime? LastModifiedOn { get; set; } = default!;
+    public DateTime? LastModifiedOn { get; set; } = null;
 
     #endregion
 }

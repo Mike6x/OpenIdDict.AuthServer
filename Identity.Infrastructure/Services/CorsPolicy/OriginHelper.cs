@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace Identity.Infrastructure.Services.CorsPolicy.Endpoints;
+namespace Identity.Infrastructure.Services.CorsPolicy;
 
 public static class OriginHelper
 {

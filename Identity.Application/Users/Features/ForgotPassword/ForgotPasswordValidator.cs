@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 
-namespace FSH.Framework.Core.Identity.Users.Features.ForgotPassword;
+namespace Identity.Application.Users.Features.ForgotPassword;
+
 public class ForgotPasswordValidator : AbstractValidator<ForgotPasswordCommand>
 {
     public ForgotPasswordValidator()

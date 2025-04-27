@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-
 using Identity.Application.Roles;
 using Identity.Application.Roles.Features.UpdatePermissions;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Roles.Endpoints;
+namespace Identity.Infrastructure.Services.Roles.Endpoints.permission;
 public static class UpdateRolePermissionsEndpoint
 {
     public static RouteHandlerBuilder MapUpdateRolePermissionsEndpoint(this IEndpointRouteBuilder endpoints)
@@ -24,7 +23,7 @@ public static class UpdateRolePermissionsEndpoint
         })
         .WithName(nameof(UpdateRolePermissionsEndpoint))
         .WithSummary("update role permissions")
-        // .RequirePermission("Permissions.Endpoints.Create")
+        // .RequirePermission("Permissions.Handlers.Create")
         .WithDescription("update role permissions");
     }
 }

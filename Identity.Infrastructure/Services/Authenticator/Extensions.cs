@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Authenticator.Endpoints;
+namespace Identity.Infrastructure.Services.Authenticator;
 
 public static class Extensions
 {
@@ -8,9 +8,9 @@ public static class Extensions
     {
         app.MapIsAuthenticatorEnabledEndpoint();
         app.MapGetAuthenticatorAndUriEndpoint();
-        app.MapPostEnableAuthenticatorEndpoint();
-        app.MapPostDisableAuthenticatorEndpoint();
-        app.MapPostResetAuthenticatorEndpoint();
+        app.MapEnableAuthenticatorEndpoint();
+        app.MapDisableAuthenticatorEndpoint();
+        app.MapResetAuthenticatorEndpoint();
         app.MapGenerateRecoverCodesEndpoint();
         app.MapCountActiveRecoveryCodesEndpoint();
 

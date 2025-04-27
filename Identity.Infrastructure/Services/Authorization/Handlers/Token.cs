@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 
-namespace Identity.Infrastructure.Services.Authorization.Endpoints;
+namespace Identity.Infrastructure.Services.Authorization.Handlers;
 
 public static class Token
 {

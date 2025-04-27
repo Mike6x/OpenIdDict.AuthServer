@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Data;
 
-public class AppDbContext : 
+public class IdentityContext : 
     IdentityDbContext<
         AppUser,
         AppRole,
@@ -16,11 +16,12 @@ public class AppDbContext :
         IdentityRoleClaim, 
         IdentityUserToken<Guid>>
 {
-    public AppDbContext(DbContextOptions options) : base(options) { }
+    public IdentityContext(DbContextOptions options) : base(options) { }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
+    
 }

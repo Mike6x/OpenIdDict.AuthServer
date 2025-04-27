@@ -1,11 +1,11 @@
-﻿namespace Framework.Core.Exceptions;
-public class NotFoundException : Exception
-{
-    public NotFoundException(string message) : base(message)
-    {
-    }
+﻿using System.Collections.ObjectModel;
+using System.Net;
 
-    public NotFoundException(string name, object key) : base($"Entity \"{name}\" ({key}) was not found.")
+namespace Framework.Core.Exceptions;
+public class NotFoundException : GeneralException
+{
+    public NotFoundException(string message)
+        : base(message, new Collection<string>(), HttpStatusCode.NotFound)
     {
     }
 }

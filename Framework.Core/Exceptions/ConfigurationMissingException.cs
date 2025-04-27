@@ -1,14 +1,11 @@
 ﻿using System.Net;
 
-namespace FSH.Framework.Core.Exceptions;
+namespace Framework.Core.Exceptions;
 
-public class ConfigurationMissingException : CustomException
+public class ConfigurationMissingException : NotFoundException
 {
-    public ConfigurationMissingException(string sectionName) : base($"{sectionName} Missing in Configurations", HttpStatusCode.NotFound)
+    public ConfigurationMissingException(string sectionName) : base($"{sectionName} Missing in Configurations")
     {
     }
-
-    public ConfigurationMissingException(string message, HttpStatusCode statusCode = HttpStatusCode.NotFound) : base(message, statusCode)
-    {
-    }
+    
 }

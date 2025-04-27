@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using Framework.Core.Exceptions;
+using Framework.Infrastructure.Common.Extensions;
 using Identity.Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -10,7 +12,7 @@ using OpenIddict.Client.AspNetCore;
 using OpenIddict.Server.AspNetCore;
 using IAuthenticationService = Identity.Application.Authentication.IAuthenticationService;
 
-namespace Identity.Infrastructure.Services.Aurhentication;
+namespace Identity.Infrastructure.Services.Authentication;
 
 public class AuthenticationService(
     UserManager<AppUser> userManager,
@@ -18,24 +20,32 @@ public class AuthenticationService(
     IOpenIddictApplicationManager applicationManager,
     IOpenIddictScopeManager scopeManager) : IAuthenticationService
 {
-    
+    // https://github.com/lieven121/IdentityOidc/blob/main/Identity.App/EndPoints/Identity/IdentityEndpoints.cs
     public async Task<IResult> LogInAsync(LoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email)) throw new BadRequestException("Email is required");
         
-        var user = await userManager.FindByEmailAsync(request.Email) 
-                   ?? throw new NotFoundException($"User with email {request.Email} not found");
+        var user = request.Email.IsValidEmail()
+                        ? await userManager.FindByEmailAsync(request.Email.Trim().Normalize())
+                        : await userManager.FindByNameAsync(request.Email);
         
-        if (!user.IsActive) 
-            throw new UnauthorizedException($"Account is disabled");
+        if (user == null) throw new UnauthorizedException("User is not found");
+        if (!user.IsActive)
+        {
+            throw new UnauthorizedException("user is deactivated");
+        }
+
+        if (!user.EmailConfirmed)
+        {
+            throw new UnauthorizedException("user not yet is confirmed by email");
+        }
         
         if (user.LockoutEnd != null && user.LockoutEnd > DateTime.UtcNow)
-            throw new UnauthorizedException($"Account is locked until {user.LockoutEnd }");
+            throw new UnauthorizedException($"Account is locked until {user.LockoutEnd.Value.ToLocalTime()}");
         
         if (!await userManager.CheckPasswordAsync(user, request.Password)) 
             throw new UnauthorizedException("Invalid credentials");
         
-
         const bool isPersistent = true;
 
         if (string.IsNullOrWhiteSpace(user.UserName)) user.UserName = user.Email;
@@ -59,7 +69,7 @@ public class AuthenticationService(
                 return Results.Accepted("Otp Required");
         }
 
-        return !result.Succeeded ? Results.Unauthorized() : Results.Ok("Logged In");
+        return !result.Succeeded ? Results.Unauthorized() : Results.Ok($"{user.UserName} Logged In");
     }
     
     public async Task<IResult> LogOutAsync(string? returnUrl)
@@ -74,6 +84,7 @@ public class AuthenticationService(
 
     }
     
+    //https://github.com/RockSolidKnowledge/Samples.OpenIddict.AdminUI/blob/main/Rsk.Samples.OpenIddict.AdminUI/Controllers/AuthenticationController.cs
     public async Task<IResult> LogInCallBackAsync(HttpContext httpContext)
     {
         var result = await httpContext.AuthenticateAsync(OpenIddictClientAspNetCoreDefaults.AuthenticationScheme);
@@ -113,3 +124,4 @@ public class AuthenticationService(
     }
     
 }
+    

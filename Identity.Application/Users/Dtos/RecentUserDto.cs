@@ -1,11 +1,13 @@
-﻿using IdentityServer.Core.Enums;
+﻿namespace Identity.Application.Users.Dtos;
 
-namespace IdentityServer.Core.DTOs;
 public class RecentUserDto
 {
     public string Id { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
-    public UserStatus Status { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public bool IsActive { get; set; } 
+    public bool IsOnline { get; set; }
+    public virtual DateTimeOffset? LockoutEnd { get; set; }
+
 }

@@ -10,7 +10,7 @@ using OpenIddict.Client.AspNetCore;
 
 namespace Identity.Infrastructure.Services.ExternalLogins.Handlers;
 
-public static class ExternalLoginEndpoint
+public static class ExternalLogin
 {
      public static async Task<IResult> Handler(
          HttpContext context, 

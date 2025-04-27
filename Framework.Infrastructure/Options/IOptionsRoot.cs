@@ -1,7 +1,7 @@
-﻿namespace Framework.Core.Options;
+﻿namespace Framework.Infrastructure.Options;
 
 public interface IOptionsRoot
 {
 }
 
-// Add from fsh
+// Add from fsh.Micro

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Framework.Core.Options;
+using Framework.Infrastructure.Options;
 
-namespace Framework.Core.Auth.OpenIdDict;
+namespace Framework.Infrastructure.Auth.OpenIdDict;
 
 public class OpenIdDictOptions : IOptionsRoot
 {

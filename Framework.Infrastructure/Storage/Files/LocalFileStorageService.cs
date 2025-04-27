@@ -1,13 +1,14 @@
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using Framework.Core.Common.Extensions;
 using Framework.Core.Origin;
+using Framework.Core.Storage;
 using Framework.Core.Storage.File;
 using Framework.Core.Storage.File.Features;
+using Framework.Infrastructure.Common.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace Framework.Core.Storage;
+namespace Framework.Infrastructure.Storage.Files;
 
 public class LocalFileStorageService(IOptions<OriginOptions> originSettings) : IStorageService
 {

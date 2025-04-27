@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Roles.Endpoints;
+namespace Identity.Infrastructure.Services.Roles.Endpoints.Basic;
 
 public static class CreateOrUpdateRoleEndpoint
 {
     public static RouteHandlerBuilder MapCreateOrUpdateRoleEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapPost("/CreateAndUpdate", async (CreateOrUpdateRoleCommand request, IRoleService roleService) =>
+        return endpoints.MapPost("/CreateAndUpdate", async (CreateOrUpdateRoleCommand request, IRoleService service) =>
         {
-            return await roleService.CreateOrUpdateAsync(request);
+            return await service.CreateOrUpdateAsync(request);
         })
         .WithName(nameof(CreateOrUpdateRoleEndpoint))
         .WithSummary("Create or update a role")
-        // .RequirePermission("Permissions.Endpoints.Create")
+        // .RequirePermission("Permissions.Handlers.Create")
         .WithDescription("Create a new role or update an existing role.");
     }
 }
@@ -31,7 +31,7 @@ public static class CreateRoleEndpoint
             })
             .WithName(nameof(CreateRoleEndpoint))
             .WithSummary("Create a role")
-            // .RequirePermission("Permissions.Endpoints.Create")
+            // .RequirePermission("Permissions.Handlers.Create")
             .WithDescription("Create a new role .");
     }
 }
@@ -46,7 +46,7 @@ public static class UpdateRoleEndpoint
             })
             .WithName(nameof(UpdateRoleEndpoint))
             .WithSummary("Update a role")
-            // .RequirePermission("Permissions.Endpoints.Create")
+            // .RequirePermission("Permissions.Handlers.Create")
             .WithDescription("Update an existing role.");
     }
 }

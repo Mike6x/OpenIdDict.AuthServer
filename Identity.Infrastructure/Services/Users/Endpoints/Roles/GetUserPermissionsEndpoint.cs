@@ -1,4 +1,4 @@
-﻿using Identity.Application.Users.Abstractions;
+﻿using Identity.Application.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;

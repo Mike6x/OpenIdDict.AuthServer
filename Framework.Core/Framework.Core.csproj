@@ -7,37 +7,35 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
+      <PackageReference Include="Ardalis.Specification" Version="9.1.0" />
       <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
 
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
       <PackageReference Include="Mapster" Version="7.4.0" />
         
       <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="9.2.1" />
+      <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.9.0" />
+      <PackageReference Include="Microsoft.OpenApi" Version="1.6.24" />
         
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
-      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.2" />
-      <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="9.1.0" />
-      <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.6.0" />
-        
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-        
-      <PackageReference Include="OpenIddict.AspNetCore" Version="6.1.1" />
-      <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.1.1" />
-      <PackageReference Include="OpenIddict.Quartz" Version="6.1.1" />
-      <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="6.1.1" />
-      <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="6.1.1" />
+      <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.1" />
+      <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.1" />
+      <PackageReference Include="OpenIddict.Quartz" Version="6.2.1" />
+      <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="6.2.1" />
+      <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="6.2.1" />
       <PackageReference Include="Proggmatic.SpaServices.Vite" Version="9.0.1" />
-      <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
+      <PackageReference Include="Quartz.Extensions.Hosting" Version="3.14.0" />
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="10.8.0.113526">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="SQLite" Version="3.13.0" />
         
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="OpenApi\" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
     </ItemGroup>
 
     <ItemGroup>

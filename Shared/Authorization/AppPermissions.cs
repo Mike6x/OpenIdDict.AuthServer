@@ -11,7 +11,7 @@ public static class AppPermissions
         // new("Search Tenants", AppActions.Search, AppResources.Tenants, IsRoot: true),
         // new("Create Tenants", AppActions.Create, AppResources.Tenants, IsRoot: true),
         // new("Update Tenants", AppActions.Update, AppResources.Tenants, IsRoot: true),
-        // new("Delete Tenants", AppActions.Delete, AppResources.Tenants, IsRoot: true),
+        // new("Remove Tenants", AppActions.Remove, AppResources.Tenants, IsRoot: true),
         // new("Export Tenants", AppActions.Export, AppResources.Tenants, IsRoot: true),
         // new("Import Tenants", AppActions.Import, AppResources.Tenants, IsRoot: true),
         //
@@ -22,7 +22,7 @@ public static class AppPermissions
         new("Search Users", AppActions.Search, AppResources.Users),
         new("Create Users", AppActions.Create, AppResources.Users),
         new("Update Users", AppActions.Update, AppResources.Users),
-        new("Delete Users", AppActions.Delete, AppResources.Users),
+        new("Remove Users", AppActions.Delete, AppResources.Users),
         new("Export Users", AppActions.Export, AppResources.Users),
         new("Import Users", AppActions.Import, AppResources.Users),
 
@@ -33,7 +33,7 @@ public static class AppPermissions
         new("Search Roles", AppActions.Search, AppResources.Roles),
         new("Create Roles", AppActions.Create, AppResources.Roles),
         new("Update Roles", AppActions.Update, AppResources.Roles),
-        new("Delete Roles", AppActions.Delete, AppResources.Roles),
+        new("Remove Roles", AppActions.Delete, AppResources.Roles),
         new("Export Roles", AppActions.Export, AppResources.Roles),
         new("Import Roles", AppActions.Import, AppResources.Roles),
 

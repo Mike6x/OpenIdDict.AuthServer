@@ -1,21 +1,20 @@
-﻿
-using Identity.Application.Roles;
+﻿using Identity.Application.Roles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Infrastructure.Services.Roles.Endpoints;
+namespace Identity.Infrastructure.Services.Roles.Endpoints.Basic;
 public static class GetRoleEndpoint
 {
     public static RouteHandlerBuilder MapGetRoleEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapGet("/{roleId:guid}", async (string roleId, IRoleService roleService) =>
+        return endpoints.MapGet("/{roleId:guid}", async (string roleId, IRoleService service) =>
             {
-                return await roleService.GetAsync(roleId);
+                return await service.GetAsync(roleId);
             })
             .WithName(nameof(GetRoleEndpoint))
             .WithSummary("Get role details without claims and permissions")
-            // .RequirePermission("Permissions.Endpoints.View")
+            // .RequirePermission("Permissions.Handlers.View")
             .WithDescription("Retrieve the details of a role by its Id.");
     }
 }

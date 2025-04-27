@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Core.Identity.Users.Features.ChangePassword;
+﻿namespace Identity.Application.Users.Features.ChangePassword;
 public class ChangePasswordCommand
 {
     public string Password { get; set; } = default!;

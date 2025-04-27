@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Core.Identity.Users.Features.ResetPassword;
+﻿namespace Identity.Application.Users.Features.ResetPassword;
 public class ResetPasswordCommand
 {
     public string Email { get; set; } = default!;

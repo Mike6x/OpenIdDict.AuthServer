@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Framework.Core.OpenApi;
+namespace Framework.Infrastructure.OpenApi;
 
 /// <summary>
 /// Fixed error enum name generation with _0, _1, _2 ...

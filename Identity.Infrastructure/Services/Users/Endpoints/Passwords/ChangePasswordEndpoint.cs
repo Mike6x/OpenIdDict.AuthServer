@@ -1,16 +1,16 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Framework.Core.Origin;
-using Identity.Application.Users.Abstractions;
+using Identity.Application.Users;
 using Identity.Application.Users.Features.ChangePassword;
-using Shared.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
+using Shared.Authorization;
 
-namespace Identity.Infrastructure.Services.Users.Endpoints;
+namespace Identity.Infrastructure.Services.Users.Endpoints.Passwords;
 public static class ChangePasswordEndpoint
 {
     internal static RouteHandlerBuilder MapChangePasswordEndpoint(this IEndpointRouteBuilder endpoints)
@@ -33,7 +33,7 @@ public static class ChangePasswordEndpoint
                 return Results.BadRequest();
             }
 
-            await userService.ChangePasswordAsync(command, userId);
+            await userService.ChangePasswordAsync(command, userId, cancellationToken);
             return Results.Ok("password have changed");
         })
         .WithName(nameof(ChangePasswordEndpoint))

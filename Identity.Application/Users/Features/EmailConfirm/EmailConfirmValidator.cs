@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace FSH.Framework.Core.Identity.Users.Features.EmailConfirm;
+namespace Identity.Application.Users.Features.EmailConfirm;
 
 public class EmailConfirmValidator : AbstractValidator<EmailConfirmCommand>
 {

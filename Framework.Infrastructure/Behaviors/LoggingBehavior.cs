@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using System.Diagnostics;
+using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 
-namespace Framework.Core.Behaviors;
+namespace Framework.Infrastructure.Behaviors;
 public class LoggingBehavior<TRequest, TResponse>
     (ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
