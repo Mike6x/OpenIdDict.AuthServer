@@ -76,15 +76,6 @@ public static class IdentityConfig
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;  // IdentityPlus
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // IdentityPlus
             })
-            // IdentityOIdc
-            // .AddIdentityCookies(options =>
-            // {
-            //     options?.ApplicationCookie?.Configure(c =>
-            //     {
-            //         c.LoginPath = "/Login";
-            //         //c.
-            //     });
-            // });
             .AddCookie(options =>
             {
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -95,15 +86,14 @@ public static class IdentityConfig
             });
 
         services
-            .AddAuthorization();
+            .AddAuthorization(
+                options =>
+                    {
+                        options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                        options.AddPolicy("UserOnly", policy => policy.RequireRole("Basic"));
+                    }
+                );
         
-        // app.Services
-        //     .AddAuthorization(options =>
-        //     {
-        //         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-        //         options.AddPolicy("UserOnly", policy => policy.RequireRole("Basic"));
-        //     });
-
         return services;
     }
     

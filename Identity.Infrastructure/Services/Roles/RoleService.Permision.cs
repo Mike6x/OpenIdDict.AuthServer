@@ -11,12 +11,10 @@ public partial class RoleService
 {
     public async Task<List<string>> GetRolePermissionsAsync(string roleId, CancellationToken cancellationToken)
     {
-        var role = await GetAsync(roleId) 
-                   ?? throw new NotFoundException($"Role with Id: {roleId} not found");
-        
-        List<string> permissions;
+        _ = await GetAsync(roleId) 
+            ?? throw new NotFoundException($"Role with Id: {roleId} not found");
 
-        permissions = await context.RoleClaims
+        var permissions = await context.RoleClaims
             .Where(c => c.RoleId.ToString() == roleId && c.ClaimType == AppClaims.Permission)
             .Select(c => c.ClaimValue ?? string.Empty)
             .ToListAsync(cancellationToken);

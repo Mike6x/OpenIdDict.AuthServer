@@ -50,14 +50,6 @@ public static class DatabaseConfig
                     .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
                     .AddSqlServer(dbOptions.ConnectionString);
                 break;
-            
-            case DbProviders.Sqlite:
-                services.AddDbContext<T>(options =>
-                {
-                    // options.UseSqlite(dbOptions?.ConnectionString, m => m.MigrationsAssembly(dbContextAssembly.FullName))
-                    options.UseOpenIddict();
-                });
-                break;
 
             default:
                 throw new GeneralException($"Identity storage provider {dbOptions.Provider} is not supported");

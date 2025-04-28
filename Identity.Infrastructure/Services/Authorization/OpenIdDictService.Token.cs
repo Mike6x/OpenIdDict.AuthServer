@@ -181,7 +181,7 @@ public partial class OpenIdDictService
         //
         // As a non-standardized extension, Authorization allows returning an id_token
         // to convey information about the client application when the "openid" scope
-        // is granted (i.e specified when calling principal.SetScopes()). When the "openid"
+        // is granted (for example, specified when calling principal.SetScopes()). When the "openid"
         // scope is not explicitly set, no identity token is returned to the client application.
 
         // Set the list of scopes granted to the client application in access_token.

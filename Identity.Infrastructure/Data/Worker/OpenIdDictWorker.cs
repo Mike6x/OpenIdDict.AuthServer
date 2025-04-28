@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Identity.Domain.Entities;
-using Identity.Domain.Enums;
 using Identity.Domain.Settings;
 using Shared.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -32,9 +31,10 @@ public class OpenIdDictWorker(
 
         await SeedScopesAsync(scope, cancellationToken);
         await SeedClientsAsync(scope, cancellationToken); // Net 8 Identity
-        
-        await SeedRolesAsync(scope, cancellationToken, context);
+        await SeedRolesAsync(scope);
         await SeedUsersAsync(scope);
+                
+        // await SeedApplicationsAsync(scope, cancellationToken)
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
@@ -136,282 +136,18 @@ public class OpenIdDictWorker(
         }
     }
 
+    
     private async Task SeedClientsAsync(IServiceScope scope, CancellationToken cancellationToken)
     {
         var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-        if (await applicationManager.FindByClientIdAsync(IdentityConstants.Client, cancellationToken) is null)
-        {
-            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = IdentityConstants.Client,
-                ClientSecret = IdentityConstants.ClientSecret,
-                DisplayName = IdentityConstants.ClientDisplayName,
-                Permissions =
-                {
-                    Permissions.Endpoints.Token,
-                    Permissions.GrantTypes.ClientCredentials,
-                    Permissions.ResponseTypes.Token,
-                    Permissions.Scopes.Email,
-                    Permissions.Scopes.Profile,
-                    Permissions.Scopes.Roles,
-                    Permissions.Prefixes.Scope + AppScopes.CatalogReadScope,
-                    Permissions.Prefixes.Scope + AppScopes.CatalogWriteScope,
-                    Permissions.Prefixes.Scope + AppScopes.CartReadScope,
-                    Permissions.Prefixes.Scope + AppScopes.CartWriteScope
-                }
-            }, cancellationToken);
-        }
-
-        if (await applicationManager.FindByClientIdAsync(IdentityConstants.GatewayResourceServer, cancellationToken) is
-            null)
-        {
-            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = IdentityConstants.GatewayResourceServer,
-                ClientSecret = IdentityConstants.GatewayResourceServerSecret,
-                Permissions =
-                {
-                    Permissions.Endpoints.Introspection
-                }
-            }, cancellationToken);
-        }
-
-        if (await applicationManager.FindByClientIdAsync(IdentityConstants.CatalogResourceServer, cancellationToken) is
-            null)
-        {
-            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = IdentityConstants.CatalogResourceServer,
-                ClientSecret = IdentityConstants.CatalogResourceServerSecret,
-                Permissions =
-                {
-                    Permissions.Endpoints.Introspection
-                }
-            }, cancellationToken);
-        }
-
-        if (await applicationManager.FindByClientIdAsync("service-worker", cancellationToken) is null)
-        {
-            await applicationManager.CreateAsync(
-                new OpenIddictApplicationDescriptor
-                {
-                    ClientId = "service-worker",
-                    ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C207",
-                    Permissions =
-                    {
-                        Permissions.Endpoints.Authorization,
-                        Permissions.Endpoints.Token,
-                        Permissions.GrantTypes.ClientCredentials,
-                        Permissions.Prefixes.Scope + "cc",
-                    },
-                },
-                cancellationToken
-            );
-        }
-
-        if (await applicationManager.FindByClientIdAsync("pixel-identity-ui", cancellationToken) is null 
-            && !string.IsNullOrEmpty(configuration["IdentityHost"]))
-        {
-
-            await applicationManager.CreateAsync(
-                new OpenIddictApplicationDescriptor
-                {
-                    ApplicationType = ApplicationTypes.Web,
-                    ClientId = "pixel-identity-ui",
-                    ConsentType = ConsentTypes.Implicit,
-                    ClientType = ClientTypes.Public,
-                    DisplayName = "Pixel Identity",
-                    PostLogoutRedirectUris =
-                    {
-                        new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")
-                    },
-                    RedirectUris =
-                    {
-                        new Uri($"{configuration["IdentityHost"]}/authentication/login-callback")
-                    },
-                    Permissions =
-                    {
-                        Permissions.Endpoints.Authorization,
-                        Permissions.Endpoints.EndSession,
-                        Permissions.Endpoints.Token,
-                        Permissions.Endpoints.Introspection,
-
-                        Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.RefreshToken,
-
-                        Permissions.ResponseTypes.Code,
-                        Permissions.Scopes.Email,
-                        Permissions.Scopes.Profile,
-                        Permissions.Scopes.Roles
-                    },
-                    Requirements =
-                    {
-                        Requirements.Features.ProofKeyForCodeExchange
-                    }
-                }, cancellationToken
-            );
-        }
-
-        if (await applicationManager.FindByClientIdAsync("web-ui", cancellationToken) is null)
-        {
-            await applicationManager.CreateAsync(
-                new OpenIddictApplicationDescriptor
-                {
-                    ClientId = "web-ui",
-                    ConsentType = ConsentTypes.Explicit,
-                    DisplayName = "Web UI Client",
-                    PostLogoutRedirectUris =
-                    {
-                        new Uri("https://localhost:4200"),
-                        new Uri("https://localhost:3000"),
-                        new Uri("https://localhost:7057"),
-                    },
-                    RedirectUris =
-                    {
-                        new Uri("https://localhost:4200"),
-                        new Uri("https://localhost:3000"),
-                        new Uri("https://oauth.pstmn.io/v1/callback"),
-                        new Uri("https://localhost:7057/auth/callback"),
-                    },
-                    Permissions =
-                    {
-                        Permissions.Endpoints.Authorization,
-                        Permissions.Endpoints.Token,
-                        Permissions.Endpoints.EndSession,
-                        Permissions.Endpoints.Revocation,
-
-                        Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.RefreshToken,
-
-                        Permissions.ResponseTypes.Code,
-
-                        Permissions.Prefixes.Scope + "api",
-                        Permissions.Scopes.Email,
-                        Permissions.Scopes.Roles,
-                        Permissions.Scopes.Profile,
-                    },
-                    Requirements =
-                    {
-                        Requirements.Features.ProofKeyForCodeExchange,
-                    },
-                },
-                cancellationToken
-            );
-        }
-
-        if (await applicationManager.FindByClientIdAsync("mvc-client", cancellationToken) is null)
-        {
-            await applicationManager.CreateAsync(
-                new OpenIddictApplicationDescriptor
-                {
-                    ClientId = "mvc-client",
-                    ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0",
-                    DisplayName = "MVC Client Application",
-                    ConsentType = ConsentTypes.Explicit,
-
-                    RedirectUris = { new Uri("https://localhost:7002/signin-oidc") },
-                    PostLogoutRedirectUris =
-                    {
-                        new Uri("https://localhost:7002/signout-callback-oidc"),
-                        new Uri("http://localhost:5002/signout-callback-oidc")
-                    },
-                    Permissions =
-                    {
-                        Permissions.Endpoints.Authorization,
-                        Permissions.Endpoints.Token,
-                        Permissions.Endpoints.Introspection,
-                        Permissions.Endpoints.EndSession,
-                        Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.RefreshToken,
-                        Permissions.GrantTypes.Password,
-
-                        Permissions.Scopes.Email,
-                        Permissions.Scopes.Profile,
-                        Permissions.Scopes.Roles, "offline_access",
-                        Permissions.Prefixes.Scope + "api1",
-
-                        Permissions.ResponseTypes.Code,
-                        Permissions.Prefixes.ResponseType + "token",
-                        Permissions.Prefixes.ResponseType + "id_token",
-                        // OpenIddictConstants.Permissions.Prefixes.ResponseType + "code"
-                    },
-                },
-                cancellationToken);
-        }
-
-        if (await applicationManager.FindByClientIdAsync("nextjs-client", cancellationToken) is null)
-        {
-            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = "nextjs-client",
-                ConsentType = ConsentTypes.Explicit,
-                DisplayName = "Openiddict Plus NextJs UI Client",
-                PostLogoutRedirectUris =
-                {
-                    new Uri("https://localhost:3000"),
-                },
-                RedirectUris =
-                {
-                    new Uri("https://localhost:3000/auth/oidc"),
-                },
-                Permissions =
-                {
-                    Permissions.Endpoints.Authorization,
-                    Permissions.Endpoints.Token,
-                    Permissions.GrantTypes.AuthorizationCode,
-                    Permissions.GrantTypes.RefreshToken,
-                    Permissions.Endpoints.EndSession,
-                    Permissions.Endpoints.Revocation,
-                    Permissions.ResponseTypes.Code,
-                    Permissions.Prefixes.Scope + "api",
-                    Permissions.Scopes.Email,
-                    Permissions.Scopes.Roles,
-                    Permissions.Scopes.Profile,
-                },
-                Requirements =
-                {
-                    Requirements.Features.ProofKeyForCodeExchange
-                }
-
-            }, cancellationToken);
-        }
+        var seedingList = new ApplicationCollection(configuration["IdentityHost"]).GetAllApplications().ToList();
         
-        if (await applicationManager.FindByClientIdAsync("blazorwasm-oidc-application", cancellationToken) is null)
+        var loadingList = configuration.GetSection("OpenIdDict:ApplicationConfigs")
+                                .Get<IEnumerable<ApplicationConfig>>();
+        
+        foreach (var applicationConfig in loadingList ?? [])
         {
-            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = "blazorwasm-oidc-application",
-                ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C206",
-                ConsentType = ConsentTypes.Explicit,
-                DisplayName = "BlazorWasm Application",
-                RedirectUris =
-                {
-                    new Uri("https://localhost:7002/authentication/login-callback")
-                },
-                PostLogoutRedirectUris =
-                {
-                    new Uri("https://localhost:7002/authentication/logout-callback")
-                },
-                Permissions =
-                {
-                    OpenIddictConstants.Permissions.Endpoints.Token,
-                    OpenIddictConstants.Permissions.GrantTypes.Password,
-                    OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                    $"{OpenIddictConstants.Permissions.Prefixes.Scope}api1"
-                },
-            }, cancellationToken);
-        }
-
-
-        var applications = configuration.GetSection("OpenIdDict:ApplicationConfigs")
-            .Get<IEnumerable<ApplicationConfig>>();
-        foreach (var applicationConfig in applications ?? [])
-        {
-            var client = await applicationManager.FindByClientIdAsync(applicationConfig.ClientId, cancellationToken);
-
-            if (client != null) continue;
-
             var app = new OpenIddictApplicationDescriptor
             {
                 ClientId = applicationConfig.ClientId,
@@ -461,7 +197,15 @@ public class OpenIdDictWorker(
                 }
 
 
-            await applicationManager.CreateAsync(app, cancellationToken);
+            seedingList.Add(app);
+
+        }
+        
+        foreach (var application in seedingList)
+        {
+            var existApplication = await applicationManager.FindByClientIdAsync(application.ClientId ?? string.Empty, cancellationToken);
+
+            if (existApplication == null) await applicationManager.CreateAsync(application, cancellationToken);
 
         }
         
@@ -486,7 +230,8 @@ public class OpenIdDictWorker(
 
     }
     
-    private async Task SeedRolesAsync(IServiceScope scope, CancellationToken cancellationToken,  IdentityContext dbContext)
+    
+    private static async Task SeedRolesAsync(IServiceScope scope)
     {
                 
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
@@ -521,7 +266,7 @@ public class OpenIdDictWorker(
     /// </summary>
     /// <param name="roleManager"></param>
     /// <param name="role"></param>
-    private async Task AssignAdminDefaultPermissionsToRoleAsync(
+    private static async Task AssignAdminDefaultPermissionsToRoleAsync(
         RoleManager<AppRole> roleManager,
         AppRole role)
     {
@@ -534,7 +279,7 @@ public class OpenIdDictWorker(
             await AddClaimAsync(roleManager, role,"identity_read_write", "scopes");
         }
     }
-    private async Task AssignPermissionsToRoleAsync(
+    private static async Task AssignPermissionsToRoleAsync(
         RoleManager<AppRole> roleManager,
         AppRole role,
         IReadOnlyList<AppPermission> permissions

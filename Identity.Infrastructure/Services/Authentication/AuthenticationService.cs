@@ -16,9 +16,7 @@ namespace Identity.Infrastructure.Services.Authentication;
 
 public class AuthenticationService(
     UserManager<AppUser> userManager,
-    SignInManager<AppUser> signInManager,
-    IOpenIddictApplicationManager applicationManager,
-    IOpenIddictScopeManager scopeManager) : IAuthenticationService
+    SignInManager<AppUser> signInManager) : IAuthenticationService
 {
     // https://github.com/lieven121/IdentityOidc/blob/main/Identity.App/EndPoints/Identity/IdentityEndpoints.cs
     public async Task<IResult> LogInAsync(LoginRequest request)
