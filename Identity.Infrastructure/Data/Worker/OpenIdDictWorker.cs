@@ -30,7 +30,7 @@ public class OpenIdDictWorker(
         _ = await context.Database.EnsureCreatedAsync(cancellationToken);
 
         await SeedScopesAsync(scope, cancellationToken);
-        await SeedClientsAsync(scope, cancellationToken); // Net 8 Identity
+        await SeedClientsAsync(scope, cancellationToken);
         await SeedRolesAsync(scope);
         await SeedUsersAsync(scope);
                 
@@ -39,104 +39,21 @@ public class OpenIdDictWorker(
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     
-    private async Task SeedScopesAsync(IServiceScope scope, CancellationToken cancellationToken)
+    private static async Task SeedScopesAsync(IServiceScope scope, CancellationToken cancellationToken)
     {
         var scopesManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
-        if (await scopesManager.CountAsync(cancellationToken) == 0)
+        
+        var seedingList = new ScopeCollection().GetAllScopes().ToList();
+        
+        if (await scopesManager.CountAsync(cancellationToken) == 0 && seedingList.Count != 0)
         {
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
+            foreach (var item in seedingList)
             {
-                Name = "profile",
-                DisplayName = "User profile",
-                Description = "Access to user profile data",
-                Resources = { "identity_server" }
-            }, cancellationToken);
-
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = "email",
-                DisplayName = "Email",
-                Description = "Access to email address",
-                Resources = { "identity_server" }
-            }, cancellationToken);
-
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = "roles",
-                DisplayName = "Roles",
-                Description = "Access to user roles",
-                Resources = { "identity_server" }
-            }, cancellationToken);
-
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = "offline_access",
-                DisplayName = "offline_access scope",
-            }, cancellationToken);
-            
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor()
-            {
-                Name = "persistence-api",
-                DisplayName = "Persistence Api"
-            }, cancellationToken);
-            
-            await scopesManager.CreateAsync( new OpenIddictScopeDescriptor
-            {
-                Name = "api",
-                Resources = { "resource_server" }
-            }, cancellationToken  );
-            
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = "api1",
-                DisplayName = "Api1 scope",
-                Description = "Access to resource server 1",
-                Resources = { "resource_server_1" }
-            }, cancellationToken);
-            
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = AppScopes.CatalogWriteScope,
-                Resources =
-                {
-                    IdentityConstants.CatalogResourceServer,
-                    IdentityConstants.GatewayResourceServer
-                }
-            }, cancellationToken);
-            
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = AppScopes.CatalogReadScope,
-                Resources =
-                {
-                    IdentityConstants.CatalogResourceServer,
-                    IdentityConstants.GatewayResourceServer
-                }
-            }, cancellationToken);
-            
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = AppScopes.CartWriteScope,
-                Resources =
-                {
-                    IdentityConstants.CartResourceServer,
-                    IdentityConstants.GatewayResourceServer
-                }
-            }, cancellationToken);
-            
-            await scopesManager.CreateAsync(new OpenIddictScopeDescriptor
-            {
-                Name = AppScopes.CartReadScope,
-                Resources =
-                {
-                    IdentityConstants.CartResourceServer,
-                    IdentityConstants.GatewayResourceServer
-                }
-            }, cancellationToken);
+                await scopesManager.CreateAsync(item, cancellationToken);
+            }
         }
     }
 
-    
     private async Task SeedClientsAsync(IServiceScope scope, CancellationToken cancellationToken)
     {
         var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
@@ -382,5 +299,5 @@ public class OpenIdDictWorker(
             Console.WriteLine($"Creating user {userConfig.Email}");
         }
     }
-
+    
 }
