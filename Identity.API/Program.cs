@@ -39,7 +39,9 @@ try
 catch (Exception ex) when (!ex.GetType().Name.Equals("HostAbortedException", StringComparison.Ordinal))
 {
     StaticLogger.EnsureInitialized();
+#pragma warning disable S6667
     Log.Fatal(ex.Message, "unhandled exception");
+#pragma warning restore S6667
 }
 finally
 {

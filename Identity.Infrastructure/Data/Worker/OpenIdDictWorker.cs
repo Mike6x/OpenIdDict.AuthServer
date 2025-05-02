@@ -160,14 +160,14 @@ public class OpenIdDictWorker(
                     : applicationConfig.ClientSecret,
                 Permissions =
                 {
+                    Permissions.GrantTypes.AuthorizationCode,
+                    Permissions.GrantTypes.RefreshToken,
+                    Permissions.GrantTypes.Password,
+                    
                     Permissions.Endpoints.Authorization,
                     Permissions.Endpoints.Introspection,
                     Permissions.Endpoints.Token,
                     Permissions.Endpoints.EndSession,
-
-                    Permissions.GrantTypes.AuthorizationCode,
-                    Permissions.GrantTypes.RefreshToken,
-                    Permissions.GrantTypes.Password,
 
                     Permissions.ResponseTypes.Code,
 
@@ -195,10 +195,8 @@ public class OpenIdDictWorker(
                 {
                     app.PostLogoutRedirectUris.Add(new Uri(uri));
                 }
-
-
+            
             seedingList.Add(app);
-
         }
         
         foreach (var application in seedingList)

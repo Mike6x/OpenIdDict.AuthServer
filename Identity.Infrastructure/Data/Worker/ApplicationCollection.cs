@@ -15,7 +15,40 @@ public class ApplicationCollection
     {
         IdentityHost = identityHost ?? string.Empty;
         
-        // post man client 
+        #region Authorization Code Flow applications
+
+        // authorization-oidc-application - oidc-debugger
+        _applications.Add( new OpenIddictApplicationDescriptor
+        {
+            ClientId = "postman",
+            ClientSecret = "postman-secret",
+            DisplayName = "Postman Oidc Debugger",
+            RedirectUris =
+            {
+                new Uri("https://oauth.pstmn.io/v1/callback") 
+            },
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.EndSession,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.ResponseTypes.Code,
+                
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles,
+                OpenIddictConstants.Permissions.Prefixes.Scope + "api"
+            },
+            //Requirements =
+            //{
+            //    Requirements.Features.ProofKeyForCodeExchange
+            //}
+        });
+        
+        // authorization-oidc-application - oidc-debugger
         _applications.Add( new OpenIddictApplicationDescriptor
         {
             ClientId = "authorization-oidc-application",
@@ -32,11 +65,13 @@ public class ApplicationCollection
             },
             Permissions =
             {
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                
                 OpenIddictConstants.Permissions.Endpoints.Authorization,
                 OpenIddictConstants.Permissions.Endpoints.EndSession,
                 OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                 OpenIddictConstants.Permissions.ResponseTypes.Code,
+                
                 OpenIddictConstants.Permissions.Scopes.Email,
                 OpenIddictConstants.Permissions.Scopes.Profile,
                 OpenIddictConstants.Permissions.Scopes.Roles,
@@ -47,6 +82,154 @@ public class ApplicationCollection
             //    Requirements.Features.ProofKeyForCodeExchange
             //}
         });
+        
+        //swagger client : authorization-oidc-application
+        _applications.Add( new OpenIddictApplicationDescriptor
+        {
+            ClientId = "web-client",
+            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C205",
+            ConsentType = OpenIddictConstants.ConsentTypes.Explicit,
+            DisplayName = "Swagger client application",
+            RedirectUris =
+            {
+                new Uri("https://localhost:7002/swagger/oauth2-redirect.html")
+            },
+            PostLogoutRedirectUris =
+            {
+                new Uri("https://localhost:7002/resources")
+            },
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.EndSession,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.ResponseTypes.Code,
+                
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles,
+                $"{OpenIddictConstants.Permissions.Prefixes.Scope}api1"
+            },
+            //Requirements =
+            //{
+            //    Requirements.Features.ProofKeyForCodeExchange
+            //}
+
+        });
+        
+        // mvc-client : authorization-oidc-application
+        _applications.Add(new OpenIddictApplicationDescriptor
+        {
+            ClientId = "mvc-client",
+            ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0",
+            DisplayName = "MVC Client Application",
+            ConsentType = OpenIddictConstants.ConsentTypes.Explicit,
+
+            RedirectUris = { new Uri("https://localhost:7002/signin-oidc") },
+            PostLogoutRedirectUris =
+            {
+                new Uri("https://localhost:7002/signout-callback-oidc"),
+                new Uri("http://localhost:5002/signout-callback-oidc")
+            },
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                OpenIddictConstants.Permissions.GrantTypes.Password,
+                
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.Endpoints.Introspection,
+                OpenIddictConstants.Permissions.Endpoints.EndSession,
+                OpenIddictConstants.Permissions.ResponseTypes.Code,
+
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles, "offline_access",
+                OpenIddictConstants.Permissions.Prefixes.Scope + "api1",
+                
+                OpenIddictConstants.Permissions.Prefixes.ResponseType + "token",
+                OpenIddictConstants.Permissions.Prefixes.ResponseType + "id_token",
+                // OpenIddictConstants.Permissions.Prefixes.ResponseType + "code"
+            },
+        });
+        #endregion
+        
+        #region Client Credentials Flow Applications
+        
+        // client-credentials-oidc-application  
+        _applications.Add( new OpenIddictApplicationDescriptor
+        {
+            ClientId = "client-credentials-oidc-application",
+            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C201",
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials
+            }
+        });
+        
+        // service-worker : client-credentials-oidc-application 
+        _applications.Add(new OpenIddictApplicationDescriptor
+        {
+            ClientId = "service-worker",
+            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C207",
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.Prefixes.Scope + "cc",
+            },
+        });
+
+        // console client
+        _applications.Add( new OpenIddictApplicationDescriptor
+        {
+            ClientId = IdentityConstants.Client,
+            ClientSecret = IdentityConstants.ClientSecret,
+            DisplayName = IdentityConstants.ClientDisplayName,
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                
+                OpenIddictConstants.Permissions.ResponseTypes.Token,
+                
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles,
+                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CatalogReadScope,
+                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CatalogWriteScope,
+                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CartReadScope,
+                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CartWriteScope
+            }
+            
+        });
+
+        #endregion
+
+        #region Password GrandType
+        
+        // password-oidc-application
+        _applications.Add( new OpenIddictApplicationDescriptor
+        {
+            ClientId = "password-oidc-application",
+            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C202",
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.GrantTypes.Password,
+                OpenIddictConstants.Permissions.Endpoints.Token
+            }
+        });
+        
+        #endregion
+        
+        #region Admin client
         
         // pixel-identity-ui
         _applications.Add(new OpenIddictApplicationDescriptor
@@ -113,62 +296,7 @@ public class ApplicationCollection
 
         });
         
-        //swagger client 
-        _applications.Add( new OpenIddictApplicationDescriptor
-        {
-            ClientId = "web-client",
-            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C205",
-            ConsentType = OpenIddictConstants.ConsentTypes.Explicit,
-            DisplayName = "Swagger client application",
-            RedirectUris =
-            {
-                new Uri("https://localhost:7002/swagger/oauth2-redirect.html")
-            },
-            PostLogoutRedirectUris =
-            {
-                new Uri("https://localhost:7002/resources")
-            },
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.EndSession,
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
-                OpenIddictConstants.Permissions.ResponseTypes.Code,
-                OpenIddictConstants.Permissions.Scopes.Email,
-                OpenIddictConstants.Permissions.Scopes.Profile,
-                OpenIddictConstants.Permissions.Scopes.Roles,
-                $"{OpenIddictConstants.Permissions.Prefixes.Scope}api1"
-            },
-            //Requirements =
-            //{
-            //    Requirements.Features.ProofKeyForCodeExchange
-            //}
 
-        });
-        
-        // console client
-        _applications.Add( new OpenIddictApplicationDescriptor
-        {
-            ClientId = IdentityConstants.Client,
-            ClientSecret = IdentityConstants.ClientSecret,
-            DisplayName = IdentityConstants.ClientDisplayName,
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
-                OpenIddictConstants.Permissions.ResponseTypes.Token,
-                OpenIddictConstants.Permissions.Scopes.Email,
-                OpenIddictConstants.Permissions.Scopes.Profile,
-                OpenIddictConstants.Permissions.Scopes.Roles,
-                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CatalogReadScope,
-                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CatalogWriteScope,
-                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CartReadScope,
-                OpenIddictConstants.Permissions.Prefixes.Scope + AppScopes.CartWriteScope
-            }
-            
-        });
-        
         // gateway resource server
         _applications.Add( new OpenIddictApplicationDescriptor
         {
@@ -192,20 +320,6 @@ public class ApplicationCollection
             }
         });
         
-        // service-worker
-        _applications.Add(new OpenIddictApplicationDescriptor
-        {
-            ClientId = "service-worker",
-            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C207",
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
-                OpenIddictConstants.Permissions.Prefixes.Scope + "cc",
-            },
-        });
-        
         // web-ui
         _applications.Add(new OpenIddictApplicationDescriptor
         {
@@ -227,60 +341,25 @@ public class ApplicationCollection
             },
             Permissions =
             {
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                
                 OpenIddictConstants.Permissions.Endpoints.Authorization,
                 OpenIddictConstants.Permissions.Endpoints.Token,
                 OpenIddictConstants.Permissions.Endpoints.EndSession,
                 OpenIddictConstants.Permissions.Endpoints.Revocation,
 
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
-                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-
                 OpenIddictConstants.Permissions.ResponseTypes.Code,
-
-                OpenIddictConstants.Permissions.Prefixes.Scope + "api",
+                
                 OpenIddictConstants.Permissions.Scopes.Email,
                 OpenIddictConstants.Permissions.Scopes.Roles,
                 OpenIddictConstants.Permissions.Scopes.Profile,
+                
+                OpenIddictConstants.Permissions.Prefixes.Scope + "api",
             },
             Requirements =
             {
                 OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange,
-            },
-        });
-        
-        // mvc-client
-        _applications.Add(new OpenIddictApplicationDescriptor
-        {
-            ClientId = "mvc-client",
-            ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0",
-            DisplayName = "MVC Client Application",
-            ConsentType = OpenIddictConstants.ConsentTypes.Explicit,
-
-            RedirectUris = { new Uri("https://localhost:7002/signin-oidc") },
-            PostLogoutRedirectUris =
-            {
-                new Uri("https://localhost:7002/signout-callback-oidc"),
-                new Uri("http://localhost:5002/signout-callback-oidc")
-            },
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.Endpoints.Introspection,
-                OpenIddictConstants.Permissions.Endpoints.EndSession,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
-                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                OpenIddictConstants.Permissions.GrantTypes.Password,
-
-                OpenIddictConstants.Permissions.Scopes.Email,
-                OpenIddictConstants.Permissions.Scopes.Profile,
-                OpenIddictConstants.Permissions.Scopes.Roles, "offline_access",
-                OpenIddictConstants.Permissions.Prefixes.Scope + "api1",
-
-                OpenIddictConstants.Permissions.ResponseTypes.Code,
-                OpenIddictConstants.Permissions.Prefixes.ResponseType + "token",
-                OpenIddictConstants.Permissions.Prefixes.ResponseType + "id_token",
-                // OpenIddictConstants.Permissions.Prefixes.ResponseType + "code"
             },
         });
         
@@ -300,17 +379,19 @@ public class ApplicationCollection
             },
             Permissions =
             {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Token,
                 OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                 OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.Token,
                 OpenIddictConstants.Permissions.Endpoints.EndSession,
                 OpenIddictConstants.Permissions.Endpoints.Revocation,
                 OpenIddictConstants.Permissions.ResponseTypes.Code,
-                OpenIddictConstants.Permissions.Prefixes.Scope + "api",
+                
                 OpenIddictConstants.Permissions.Scopes.Email,
                 OpenIddictConstants.Permissions.Scopes.Roles,
                 OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Prefixes.Scope + "api",
             },
             Requirements =
             {
@@ -336,10 +417,12 @@ public class ApplicationCollection
             },
             Permissions =
             {
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                
                 OpenIddictConstants.Permissions.Endpoints.Authorization,
                 OpenIddictConstants.Permissions.Endpoints.EndSession,
                 OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+     
                 OpenIddictConstants.Permissions.ResponseTypes.Code,
                 OpenIddictConstants.Permissions.Scopes.Email,
                 OpenIddictConstants.Permissions.Scopes.Profile,
@@ -352,30 +435,7 @@ public class ApplicationCollection
             //}
 
         });
-
-        // client-credentials-oidc-application  
-        _applications.Add( new OpenIddictApplicationDescriptor
-        {
-            ClientId = "client-credentials-oidc-application",
-            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C201",
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials
-            }
-        });
         
-        // password-oidc-application
-        _applications.Add( new OpenIddictApplicationDescriptor
-        {
-            ClientId = "password-oidc-application",
-            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C202",
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.Password
-            }
-        });
-        
+        #endregion
     }
 }

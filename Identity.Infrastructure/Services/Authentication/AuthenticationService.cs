@@ -51,7 +51,7 @@ public class AuthenticationService(
         user.LastLoginOn = DateTime.UtcNow;
         await userManager.UpdateAsync(user);
         
-        var result = await signInManager.PasswordSignInAsync(user.UserName, request.Password, isPersistent, true);
+        var result = await signInManager.PasswordSignInAsync(user.UserName ?? string.Empty, request.Password, isPersistent, true);
 
         if (result.RequiresTwoFactor)
         {

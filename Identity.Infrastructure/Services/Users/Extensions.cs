@@ -15,6 +15,8 @@ public static class Extensions
 {
     public static IEndpointRouteBuilder MapAccountEndpoints(this IEndpointRouteBuilder app)
     {
+        app.MapRegisterUserEndpoint();
+        
         app.MapChangePasswordEndpoint();
         app.MapForgotPasswordEndpoint();
         app.MapResetPasswordEndpoint();
@@ -65,8 +67,6 @@ public static class Extensions
     
     public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapRegisterUserEndpoint();
-        
         app.MapCreateUserEndpoint();
         app.MapGetUsersEndpoint();
         app.MapGetUserEndpoint();
